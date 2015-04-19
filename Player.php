@@ -161,25 +161,25 @@ class Player extends _Player
      */
     public static function printPlayer($player)
     {
-        echo 'return {
-    identifier = ' . $player->identifier . ',
-    community_identifier = ' . $player->community_identifier . ',
-    name = "' . $player->name . '",
-    steam_identifier = "' . $player->steam_identifier . '",
-    banned = ' . $player->banned . ',
-    banned_date_time = "' . $player->banned_date_time . '",
-    banned_expire_date_time = "' . $player->banned_expire_date_time . '",
-    banned_reason = "' . $player->banned_reason . '",
-    date_time = "' . $player->date_time . '",
-    experience = ' . $player->experience . ',
-    joined_date_time = "' . $player->joined_date_time . '",
-    joined_name = "' . $player->joined_name . '",
-    level = ' . $player->level . ',
-    old_name = "' . $player->old_name . '",
-    online = ' . $player->online . ',
-    points = ' . $player->points . ',
-    rank = "' . $player->rank . '",
-    warning_percentage = ' . $player->warning_percentage . '
+        echo 'return {' . PHP_EOL . '
+    identifier = ' . $player->identifier . ',' . PHP_EOL . '
+    community_identifier = ' . $player->community_identifier . ',' . PHP_EOL . '
+    name = "' . $player->name . '",' . PHP_EOL . '
+    steam_identifier = "' . $player->steam_identifier . '",' . PHP_EOL . '
+    banned = ' . $player->banned . ',' . PHP_EOL . '
+    banned_date_time = "' . $player->banned_date_time . '",' . PHP_EOL . '
+    banned_expire_date_time = "' . $player->banned_expire_date_time . '",' . PHP_EOL . '
+    banned_reason = "' . $player->banned_reason . '",' . PHP_EOL . '
+    date_time = "' . $player->date_time . '",' . PHP_EOL . '
+    experience = ' . $player->experience . ',' . PHP_EOL . '
+    joined_date_time = "' . $player->joined_date_time . '",' . PHP_EOL . '
+    joined_name = "' . $player->joined_name . '",' . PHP_EOL . '
+    level = ' . $player->level . ',' . PHP_EOL . '
+    old_name = "' . $player->old_name . '",' . PHP_EOL . '
+    online = ' . $player->online . ',' . PHP_EOL . '
+    points = ' . $player->points . ',' . PHP_EOL . '
+    rank = "' . $player->rank . '",' . PHP_EOL . '
+    warning_percentage = ' . $player->warning_percentage . PHP_EOL . '
 }';
     }
 
@@ -306,5 +306,44 @@ class Player extends _Player
      * @param $array array Key-value pair to update.
      */
     public function update($db, $array) {
+        if (!self::communityIdExists($db, $this->community_identifier)) {
+            exit('community_identifier does not exist.');
+        }
+        if (!self::nameExists($db, $this->name)) {
+            exit('name does not exist.');
+        }
+        if (!self::steamIdExists($db, $this->steam_identifier)) {
+            exit('steam_identifier does not exist.');
+        }
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(2, $this->$name, PDO::PARAM_STR, MAX_NAME_LENGTH);
+        $stmt->bindParam(3, $this->$steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        $array_count = count($array);
+        if ($array_count < 1) {
+            throw new InvalidArgumentException('array does not have any valid key-value pair(s).');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $statement = 'UPDATE players SET';
+        foreach ($array as $key => $value) {
+            $statement = $statement . ' ' . $key . '=:' . $key;
+        }
+        $statement = $statement . ' WHERE identifier=:identifier';
+        array_merge($array, array(':identifier' => $player->identifier));
+        $stmt = $db->prepare($statement);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute($array);
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        unset($array);
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        self::printPlayer($player);
+        unset($player);
     }
 }
