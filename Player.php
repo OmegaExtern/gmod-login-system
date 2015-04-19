@@ -2,13 +2,24 @@
 require_once('Constants.php');
 require_once('Utility.php');
 
+/**
+ * Class _Player
+ */
 abstract class _Player
 {
     public $identifier, $community_identifier, $name, $steam_identifier, $banned, $banned_date_time, $banned_expire_date_time, $banned_reason, $date_time, $experience, $joined_date_time, $joined_name, $level, $old_name, $online, $points, $rank, $warning_percentage;
 }
 
+/**
+ * Class Player
+ */
 class Player extends _Player
 {
+    /**
+     * @param $community_identifier string Community ID.
+     * @param $name string Name.
+     * @param $steam_identifier string Steam ID.
+     */
     public function Player($community_identifier, $name, $steam_identifier)
     {
         $this->community_identifier = $community_identifier;
@@ -18,13 +29,13 @@ class Player extends _Player
 
     /**
      * @param $db PDO PDO of the database connection.
-     * @param $community_identifier int Community ID of the player to check.
+     * @param $community_identifier string Community ID of the player to check.
      * @return bool Returns TRUE if the given community ID exists; otherwise FALSE.
      */
     public static function communityIdExists($db, $community_identifier)
     {
         $stmt = $db->prepare('SELECT 1 FROM players WHERE community_identifier=? LIMIT 1');
-        $stmt->bindParam(1, $community_identifier, PDO::PARAM_INT, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(1, $community_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
         $success = $stmt->execute();
         if (!$success) {
             throw new PDOException('Failed to execute SQL query.');
@@ -64,16 +75,64 @@ class Player extends _Player
         return $stmt->rowCount() > 0;
     }
 
-    public static function getPlayerByCommunityId($db, $communityId)
+    /**
+     * @param $db PDO PDO of the database connection.
+     * @param $community_identifier string Community ID of the player.
+     */
+    public static function getPlayerByCommunityId($db, $community_identifier)
     {
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $community_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            exit('player was not found.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        self::printPlayer($player);
     }
 
+    /**
+     * @param $db PDO PDO of the database connection.
+     * @param $name string Name of the player.
+     */
     public static function getPlayerByName($db, $name)
     {
+        $stmt = $db->prepare('SELECT * FROM players WHERE name=? LIMIT 1');
+        $stmt->bindParam(1, $name, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            exit('player was not found.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        self::printPlayer($player);
     }
 
-    public static function getPlayerBySteamId($db, $steamId)
+    /**
+     * @param $db PDO PDO of the database connection.
+     * @param $steam_identifier string Steam ID of the player.
+     */
+    public static function getPlayerBySteamId($db, $steam_identifier)
     {
+        $stmt = $db->prepare('SELECT * FROM players WHERE steam_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $steam_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            exit('player was not found.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        self::printPlayer($player);
     }
 
     /**
@@ -118,7 +177,7 @@ warning_percentage = ' . $player->warning_percentage . '
             exit('steam_identifier does not exist.');
         }
         $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
-        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_INT, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
         $stmt->bindParam(2, $this->$name, PDO::PARAM_STR, MAX_NAME_LENGTH);
         $stmt->bindParam(3, $this->$steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
         $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
@@ -138,7 +197,7 @@ warning_percentage = ' . $player->warning_percentage . '
         }
         $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
         $stmt->bindValue(1, true);
-        $stmt->bindParam(2, $player->identifier, PDO::PARAM_INT, MAX_IDENTIFIER_LENGTH);
+        $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_IDENTIFIER_LENGTH);
         $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
         $success = $stmt->execute();
         if (!$success) {
@@ -180,7 +239,7 @@ warning_percentage = ' . $player->warning_percentage . '
             exit('steam_identifier already exists.');
         }
         $stmt = $db->prepare('INSERT INTO players (community_identifier, joined_name, name, old_name, steam_identifier) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bindParam(1, $this->$community_identifier, PDO::PARAM_INT, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(1, $this->$community_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
         $stmt->bindParam(2, $this->$name, PDO::PARAM_STR, MAX_NAME_LENGTH);
         $stmt->bindParam(3, $this->$name, PDO::PARAM_STR, MAX_NAME_LENGTH);
         $stmt->bindParam(4, $this->$name, PDO::PARAM_STR, MAX_NAME_LENGTH);
