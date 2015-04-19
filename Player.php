@@ -243,6 +243,36 @@ class Player extends _Player
         if (!self::steamIdExists($db, $this->steam_identifier)) {
             exit('steam_identifier does not exist.');
         }
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(2, $this->$name, PDO::PARAM_STR, MAX_NAME_LENGTH);
+        $stmt->bindParam(3, $this->$steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            exit('invalid credentials.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        if ($player->banned) {
+            exit('player is banned.');
+        }
+        if (!$player->online) {
+            exit('player is already offline.');
+        }
+        $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
+        $stmt->bindValue(1, false);
+        $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_IDENTIFIER_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        self::printPlayer($player);
+        unset($player);
     }
 
     /**
