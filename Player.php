@@ -400,8 +400,9 @@ class Player extends _Player
      * @return null|_Player Returns _Player object on success; NULL on failure.
      */
     public function updatePlayer($db) {
-        $stmt = $db->prepare('SELECT * FROM players WHERE identifier=? LIMIT 1');
-        $stmt->bindParam(1, $this->identifier, PDO::PARAM_STR, MAX_IDENTIFIER_LENGTH);
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(2, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
         $success = $stmt->execute();
         if (!$success) {
             throw new PDOException('Failed to execute SQL query.');
