@@ -23,8 +23,17 @@ class Player extends _Player
     public function Player($community_identifier, $name, $steam_identifier)
     {
         $this->community_identifier = $community_identifier;
+        if (!Utility::isValidCommunityId($community_identifier)) {
+            exit('community_identifier is not valid.');
+        }
         $this->name = $name;
+        if (!Utility::isValidName($name)) {
+            exit('name is not valid.');
+        }
         $this->steam_identifier = $steam_identifier;
+        if (!Utility::isValidSteamId($steam_identifier)) {
+            exit('steam_identifier is not valid.');
+        }
     }
 
     /**

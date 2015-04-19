@@ -77,15 +77,15 @@ class Utility
     }
 
     /**
-     * @param $steamId string Steam ID to convert into community ID.
+     * @param $steam_identifier string Steam ID to convert into community ID.
      * @return string Returns community ID representation of the given Steam ID.
      */
-    public static function steamId2communityId($steamId)
+    public static function steamId2communityId($steam_identifier)
     {
-        if (!self::isValidSteamId($steamId)) {
-            throw new InvalidArgumentException('steamId is not valid.');
+        if (!self::isValidSteamId($steam_identifier)) {
+            throw new InvalidArgumentException('steam_identifier is not valid.');
         }
-        return bcadd(bcadd(bcmul(substr($steamId, 10), '2'), self::Long), substr($steamId, 8, 1));
+        return bcadd(bcadd(bcmul(substr($steam_identifier, 10), '2'), self::Long), substr($steam_identifier, 8, 1));
     }
 
     /**
@@ -98,11 +98,11 @@ class Utility
     }
 
     /**
-     * @param $steamId string Value to validate.
-     * @return bool Returns TRUE if the given steamId is valid; otherwise FALSE.
+     * @param $steam_identifier string Value to validate.
+     * @return bool Returns TRUE if the given steam_identifier is valid; otherwise FALSE.
      */
-    public static function isValidSteamId($steamId)
+    public static function isValidSteamId($steam_identifier)
     {
-        return preg_match('/^(STEAM_0:[0-1]:[0-9]{1,9})$/A', strval($steamId)) === 1;
+        return preg_match('/^(STEAM_0:[0-1]:[0-9]{1,9})$/A', strval($steam_identifier)) === 1;
     }
 }
