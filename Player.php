@@ -31,9 +31,13 @@ class Player extends _Player
      * @param $db PDO PDO of the database connection.
      * @param $community_identifier string Community ID of the player to check.
      * @return bool Returns TRUE if the given community ID exists; otherwise FALSE.
+     * @throws Exception
      */
     public static function communityIdExists($db, $community_identifier)
     {
+        if (!Utility::isValidCommunityId($community_identifier)) {
+            throw new Exception('community_identifier is not valid.');
+        }
         $stmt = $db->prepare('SELECT 1 FROM players WHERE community_identifier=? LIMIT 1');
         $stmt->bindParam(1, $community_identifier, PDO::PARAM_STR/*PDO::PARAM_INT*/, MAX_COMMUNITY_ID_LENGTH);
         $success = $stmt->execute();
@@ -47,9 +51,13 @@ class Player extends _Player
      * @param $db PDO PDO of the database connection.
      * @param $name string Name of the player to check.
      * @return bool Returns TRUE if the given name exists; otherwise FALSE.
+     * @throws Exception
      */
     public static function nameExists($db, $name)
     {
+        if (!Utility::isValidName($name)) {
+            throw new Exception('name is not valid.');
+        }
         $stmt = $db->prepare('SELECT 1 FROM players WHERE name=? LIMIT 1');
         $stmt->bindParam(1, $name, PDO::PARAM_STR, MAX_NAME_LENGTH);
         $success = $stmt->execute();
@@ -63,9 +71,13 @@ class Player extends _Player
      * @param $db PDO PDO of the database connection.
      * @param $steam_identifier string Steam ID of the player to check.
      * @return bool Returns TRUE if the given Steam ID exists; otherwise FALSE.
+     * @throws Exception
      */
     public static function steamIdExists($db, $steam_identifier)
     {
+        if (!Utility::isValidSteamId($steam_identifier)) {
+            throw new Exception('steam_identifier is not valid.');
+        }
         $stmt = $db->prepare('SELECT 1 FROM players WHERE steam_identifier=? LIMIT 1');
         $stmt->bindParam(1, $steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
         $success = $stmt->execute();
@@ -141,24 +153,24 @@ class Player extends _Player
     public static function printPlayer($player)
     {
         echo 'return {
-identifier = ' . $player->identifier . ',
-community_identifier = ' . $player->community_identifier . ',
-name = "' . $player->name . '",
-steam_identifier = "' . $player->steam_identifier . '",
-banned = ' . $player->banned . ',
-banned_date_time = "' . $player->banned_date_time . '",
-banned_expire_date_time = "' . $player->banned_expire_date_time . '",
-banned_reason = "' . $player->banned_reason . '",
-date_time = "' . $player->date_time . '",
-experience = ' . $player->experience . ',
-joined_date_time = "' . $player->joined_date_time . '",
-joined_name = "' . $player->joined_name . '",
-level = ' . $player->level . ',
-old_name = "' . $player->old_name . '",
-online = ' . $player->online . ',
-points = ' . $player->points . ',
-rank = "' . $player->rank . '",
-warning_percentage = ' . $player->warning_percentage . '
+    identifier = ' . $player->identifier . ',
+    community_identifier = ' . $player->community_identifier . ',
+    name = "' . $player->name . '",
+    steam_identifier = "' . $player->steam_identifier . '",
+    banned = ' . $player->banned . ',
+    banned_date_time = "' . $player->banned_date_time . '",
+    banned_expire_date_time = "' . $player->banned_expire_date_time . '",
+    banned_reason = "' . $player->banned_reason . '",
+    date_time = "' . $player->date_time . '",
+    experience = ' . $player->experience . ',
+    joined_date_time = "' . $player->joined_date_time . '",
+    joined_name = "' . $player->joined_name . '",
+    level = ' . $player->level . ',
+    old_name = "' . $player->old_name . '",
+    online = ' . $player->online . ',
+    points = ' . $player->points . ',
+    rank = "' . $player->rank . '",
+    warning_percentage = ' . $player->warning_percentage . '
 }';
     }
 

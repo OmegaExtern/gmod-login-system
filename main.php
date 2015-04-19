@@ -19,9 +19,18 @@ function pass01(&$community_identifier, &$name, &$steam_identifier)
     if (!isset($_POST['name']) || empty($_POST['name']) || !is_string($_POST['name'])) {
         exit('name is undefined.');
     }
-    $community_identifier = strtoupper($_POST['community_identifier']);
     $name = Utility::sanitizeInput($_POST['name']);
+    if (!Utility::isValidName($name)) {
+        exit('name is not valid.');
+    }
+    $community_identifier = strtoupper($_POST['community_identifier']);
+    if (!Utility::isValidCommunityId($community_identifier)) {
+        exit('community_identifier is not valid.');
+    }
     $steam_identifier = Utility::communityId2steamId($community_identifier);
+    if (!Utility::isValidSteamId($steam_identifier)) {
+        exit('steam_identifier is not valid.');
+    }
 }
 
 switch (strtoupper($_POST['do'])) {
