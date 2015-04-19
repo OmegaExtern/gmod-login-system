@@ -13,34 +13,6 @@ class Player
         $this->steam_identifier = $steam_identifier;
     }
 
-    public static function getPlayerByCommunityId($communityId)
-    {
-    }
-
-    public static function getPlayerByName($name)
-    {
-    }
-
-    public static function getPlayerBySteamId($steamId)
-    {
-    }
-
-    /**
-     * @param $db PDO PDO-pointer to the database connection.
-     */
-    public function login($db)
-    {
-        if (!self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier does not exist.');
-        }
-        if (!self::nameExists($db, $this->name)) {
-            exit('name does not exist.');
-        }
-        if (!self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier does not exist.');
-        }
-    }
-
     /**
      * @param $db PDO PDO-pointer to the database connection.
      * @param $community_identifier int Community ID of the player to check.
@@ -87,6 +59,34 @@ class Player
             throw new PDOException('Failed to execute SQL query.');
         }
         return $stmt->rowCount() > 0;
+    }
+
+    public static function getPlayerByCommunityId($communityId)
+    {
+    }
+
+    public static function getPlayerByName($name)
+    {
+    }
+
+    public static function getPlayerBySteamId($steamId)
+    {
+    }
+
+    /**
+     * @param $db PDO PDO-pointer to the database connection.
+     */
+    public function login($db)
+    {
+        if (!self::communityIdExists($db, $this->community_identifier)) {
+            exit('community_identifier does not exist.');
+        }
+        if (!self::nameExists($db, $this->name)) {
+            exit('name does not exist.');
+        }
+        if (!self::steamIdExists($db, $this->steam_identifier)) {
+            exit('steam_identifier does not exist.');
+        }
     }
 
     /**
