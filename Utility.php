@@ -24,27 +24,36 @@ class Utility
     }
 
     /**
-     * @param $communityId int Community ID to convert into Steam ID.
-     * @return string Returns Steam ID representation of the given communityId.
+     * @param $community_identifier string Value to validate.
+     * @return bool Returns TRUE if the given community_identifier is valid; otherwise FALSE.
      */
-    public static function communityId2steamId($communityId)
+    public static function isValidCommunityId($community_identifier)
     {
-        if (!self::isValidCommunityId($communityId)) {
-            throw new InvalidArgumentException('communityId is not valid.');
-        }
-        $communityId = bcsub(strval($communityId), self::Long);
-        $id = bcmod(strval($communityId), '2');
-        $communityId = bcsub(strval($communityId), strval($id));
-        return 'STEAM_0:' . $id . ':' . bcdiv(strval($communityId), '2');
+        return preg_match('/^(7656119[0-9]{10})$/A', strval($community_identifier)) === 1;
     }
 
     /**
-     * @param $communityId int Value to validate.
-     * @return bool Returns TRUE if the given communityId is valid; otherwise FALSE.
+     * @param $steam_identifier string Value to validate.
+     * @return bool Returns TRUE if the given steam_identifier is valid; otherwise FALSE.
      */
-    public static function isValidCommunityId($communityId)
+    public static function isValidSteamId($steam_identifier)
     {
-        return preg_match('/^(7656119[0-9]{10})$/A', intval($communityId)) === 1;
+        return preg_match('/^(STEAM_0:[0-1]:[0-9]{1,9})$/A', strval($steam_identifier)) === 1;
+    }
+
+    /**
+     * @param $community_identifier string Community ID to convert into Steam ID.
+     * @return string Returns Steam ID representation of the given community_identifier.
+     */
+    public static function communityId2steamId($community_identifier)
+    {
+        if (!self::isValidCommunityId($community_identifier)) {
+            throw new InvalidArgumentException('community_identifier is not valid.');
+        }
+        $community_identifier = bcsub(strval($community_identifier), self::Long);
+        $id = bcmod(strval($community_identifier), '2');
+        $community_identifier = bcsub(strval($community_identifier), strval($id));
+        return 'STEAM_0:' . $id . ':' . bcdiv(strval($community_identifier), '2');
     }
 
     /**
@@ -95,14 +104,5 @@ class Utility
     public static function isValidName($name)
     {
         return preg_match('/' . NAME_PATTERN . '/A', strval($name)) === 1;
-    }
-
-    /**
-     * @param $steam_identifier string Value to validate.
-     * @return bool Returns TRUE if the given steam_identifier is valid; otherwise FALSE.
-     */
-    public static function isValidSteamId($steam_identifier)
-    {
-        return preg_match('/^(STEAM_0:[0-1]:[0-9]{1,9})$/A', strval($steam_identifier)) === 1;
     }
 }
