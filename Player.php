@@ -2,10 +2,13 @@
 require_once('Constants.php');
 require_once('Utility.php');
 
-class Player
+abstract class _Player
 {
     public $identifier, $community_identifier, $name, $steam_identifier, $banned, $banned_date_time, $banned_expire_date_time, $banned_reason, $date_time, $experience, $joined_date_time, $joined_name, $level, $old_name, $online, $points, $rank, $warning_percentage;
+}
 
+class Player extends _Player
+{
     public function Player($community_identifier, $name, $steam_identifier)
     {
         $this->community_identifier = $community_identifier;
@@ -14,7 +17,7 @@ class Player
     }
 
     /**
-     * @param $db PDO PDO-pointer to the database connection.
+     * @param $db PDO PDO of the database connection.
      * @param $community_identifier int Community ID of the player to check.
      * @return bool Returns TRUE if the given community ID exists; otherwise FALSE.
      */
@@ -30,7 +33,7 @@ class Player
     }
 
     /**
-     * @param $db PDO PDO-pointer to the database connection.
+     * @param $db PDO PDO of the database connection.
      * @param $name string Name of the player to check.
      * @return bool Returns TRUE if the given name exists; otherwise FALSE.
      */
@@ -46,7 +49,7 @@ class Player
     }
 
     /**
-     * @param $db PDO PDO-pointer to the database connection.
+     * @param $db PDO PDO of the database connection.
      * @param $steam_identifier string Steam ID of the player to check.
      * @return bool Returns TRUE if the given Steam ID exists; otherwise FALSE.
      */
@@ -61,20 +64,47 @@ class Player
         return $stmt->rowCount() > 0;
     }
 
-    public static function getPlayerByCommunityId($communityId)
+    public static function getPlayerByCommunityId($db, $communityId)
     {
     }
 
-    public static function getPlayerByName($name)
+    public static function getPlayerByName($db, $name)
     {
     }
 
-    public static function getPlayerBySteamId($steamId)
+    public static function getPlayerBySteamId($db, $steamId)
     {
     }
 
     /**
-     * @param $db PDO PDO-pointer to the database connection.
+     * @param $player _Player _Player object.
+     */
+    public static function printPlayer($player)
+    {
+        echo 'return {
+identifier = ' . $player->identifier . ',
+community_identifier = ' . $player->community_identifier . ',
+name = "' . $player->name . '",
+steam_identifier = "' . $player->steam_identifier . '",
+banned = ' . $player->banned . ',
+banned_date_time = "' . $player->banned_date_time . '",
+banned_expire_date_time = "' . $player->banned_expire_date_time . '",
+banned_reason = "' . $player->banned_reason . '",
+date_time = "' . $player->date_time . '",
+experience = ' . $player->experience . ',
+joined_date_time = "' . $player->joined_date_time . '",
+joined_name = "' . $player->joined_name . '",
+level = ' . $player->level . ',
+old_name = "' . $player->old_name . '",
+online = ' . $player->online . ',
+points = ' . $player->points . ',
+rank = "' . $player->rank . '",
+warning_percentage = ' . $player->warning_percentage . '
+}';
+    }
+
+    /**
+     * @param $db PDO PDO of the database connection.
      */
     public function login($db)
     {
@@ -87,10 +117,40 @@ class Player
         if (!self::steamIdExists($db, $this->steam_identifier)) {
             exit('steam_identifier does not exist.');
         }
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_INT, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(2, $this->$name, PDO::PARAM_STR, MAX_NAME_LENGTH);
+        $stmt->bindParam(3, $this->$steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            exit('invalid credentials.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        if ($player->banned) {
+            exit('player is banned.');
+        }
+        if ($player->online) {
+            exit('player is already online.');
+        }
+        $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
+        $stmt->bindValue(1, true);
+        $stmt->bindParam(2, $player->identifier, PDO::PARAM_INT, MAX_IDENTIFIER_LENGTH);
+        $stmt->setFetchMode(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        self::printPlayer($player);
+        unset($player);
     }
 
     /**
-     * @param $db PDO PDO-pointer to the database connection.
+     * @param $db PDO PDO of the database connection.
      */
     public function logout($db)
     {
@@ -106,7 +166,7 @@ class Player
     }
 
     /**
-     * @param $db PDO PDO-pointer to the database connection.
+     * @param $db PDO PDO of the database connection.
      */
     public function register($db)
     {
@@ -129,5 +189,12 @@ class Player
         if (!$success) {
             throw new PDOException('Failed to execute SQL query.');
         }
+    }
+
+    /**
+     * @param $db PDO PDO of the database connection.
+     * @param $array array Key-value pair to update.
+     */
+    public function update($db, $array) {
     }
 }
