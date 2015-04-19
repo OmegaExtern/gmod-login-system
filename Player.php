@@ -1,5 +1,5 @@
 <?php
-require_once('constants.php');
+require_once('Constants.php');
 require_once('Utility.php');
 
 class Player
@@ -28,15 +28,15 @@ class Player
     /**
      * @param $db PDO PDO-pointer to the database connection.
      */
-    public function login(&$db)
+    public function login($db)
     {
-        if (!Player::communityIdExists($db, $this->community_identifier)) {
+        if (!self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier does not exist.');
         }
-        if (!Player::nameExists($db, $this->name)) {
+        if (!self::nameExists($db, $this->name)) {
             exit('name does not exist.');
         }
-        if (!Player::steamIdExists($db, $this->steam_identifier)) {
+        if (!self::steamIdExists($db, $this->steam_identifier)) {
             exit('steam_identifier does not exist.');
         }
     }
@@ -46,7 +46,7 @@ class Player
      * @param $community_identifier int Community ID of the player to check.
      * @return bool Returns TRUE if the given community ID exists; otherwise FALSE.
      */
-    public static function communityIdExists(&$db, $community_identifier)
+    public static function communityIdExists($db, $community_identifier)
     {
         $stmt = $db->prepare('SELECT 1 FROM players WHERE community_identifier=? LIMIT 1');
         $stmt->bindParam(1, $community_identifier, PDO::PARAM_INT, MAX_COMMUNITY_ID_LENGTH);
@@ -62,7 +62,7 @@ class Player
      * @param $name string Name of the player to check.
      * @return bool Returns TRUE if the given name exists; otherwise FALSE.
      */
-    public static function nameExists(&$db, $name)
+    public static function nameExists($db, $name)
     {
         $stmt = $db->prepare('SELECT 1 FROM players WHERE name=? LIMIT 1');
         $stmt->bindParam(1, $name, PDO::PARAM_STR, MAX_NAME_LENGTH);
@@ -78,7 +78,7 @@ class Player
      * @param $steam_identifier string Steam ID of the player to check.
      * @return bool Returns TRUE if the given Steam ID exists; otherwise FALSE.
      */
-    public static function steamIdExists(&$db, $steam_identifier)
+    public static function steamIdExists($db, $steam_identifier)
     {
         $stmt = $db->prepare('SELECT 1 FROM players WHERE steam_identifier=? LIMIT 1');
         $stmt->bindParam(1, $steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
@@ -92,15 +92,15 @@ class Player
     /**
      * @param $db PDO PDO-pointer to the database connection.
      */
-    public function logout(&$db)
+    public function logout($db)
     {
-        if (!Player::communityIdExists($db, $this->community_identifier)) {
+        if (!self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier does not exist.');
         }
-        if (!Player::nameExists($db, $this->name)) {
+        if (!self::nameExists($db, $this->name)) {
             exit('name does not exist.');
         }
-        if (!Player::steamIdExists($db, $this->steam_identifier)) {
+        if (!self::steamIdExists($db, $this->steam_identifier)) {
             exit('steam_identifier does not exist.');
         }
     }
@@ -108,15 +108,15 @@ class Player
     /**
      * @param $db PDO PDO-pointer to the database connection.
      */
-    public function register(&$db)
+    public function register($db)
     {
-        if (Player::communityIdExists($db, $this->community_identifier)) {
+        if (self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier already exists.');
         }
-        if (Player::nameExists($db, $this->name)) {
+        if (self::nameExists($db, $this->name)) {
             exit('name already exists.');
         }
-        if (Player::steamIdExists($db, $this->steam_identifier)) {
+        if (self::steamIdExists($db, $this->steam_identifier)) {
             exit('steam_identifier already exists.');
         }
         $stmt = $db->prepare('INSERT INTO players (community_identifier, joined_name, name, old_name, steam_identifier) VALUES (?, ?, ?, ?, ?)');

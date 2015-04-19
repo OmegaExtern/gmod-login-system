@@ -6,7 +6,8 @@ if (!isset($_POST) || strtoupper($_SERVER['REQUEST_METHOD']) != 'POST') {
 if (!isset($_POST['do']) || empty($_POST['do']) || !is_string($_POST['do'])) {
     exit('do is undefined.');
 }
-require_once('constants.php');
+require_once('Constants.php');
+require_once('Utility.php');
 $community_identifier = null;
 $name = null;
 $steam_identifier = null;
