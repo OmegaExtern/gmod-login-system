@@ -85,29 +85,27 @@ class Player extends _Player
     /**
      * @param $db PDO PDO of the database connection.
      * @param $community_identifier string Community ID of the player.
-     * @param $name string Name of the player.
-     * @param $steam_identifier string Steam ID of the player.
-     * @return _Player _Player object.
+     * @return null|Player Returns a new Player object on success; NULL on failure.
      * @throws Exception
      */
-    public static function getUpdatedPlayer($db, $community_identifier, $name, $steam_identifier) {
+    public static function getUpdatedPlayer($db, $community_identifier) {
         if (!Utility::isValidCommunityId($community_identifier)) {
             throw new Exception('community_identifier is not valid.');
         }
-        if (!Utility::isValidName($name)) {
-            throw new Exception('name is not valid.');
-        }
-        if (!Utility::isValidSteamId($steam_identifier)) {
-            throw new Exception('steam_identifier is not valid.');
-        }
-        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? LIMIT 1');
         $stmt->bindParam(1, $community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
-        $stmt->bindParam(2, $name, PDO::PARAM_STR, MAX_NAME_LENGTH);
-        $stmt->bindParam(3, $steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
-        $stmt->execute();
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            return null;
+        }
+        $new = new self();
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
-        self::printPlayer($player);
-        return $player;
+        $new->setPlayer($player);
+        // self::printPlayer($player);
+        return $new;
     }
 
     /**
@@ -133,7 +131,7 @@ class Player extends _Player
         $new = new self();
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
         $new->setPlayer($player);
-        self::printPlayer($player);
+        // self::printPlayer($player);
         return $new;
     }
 
@@ -160,7 +158,7 @@ class Player extends _Player
         $new = new self();
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
         $new->setPlayer($player);
-        self::printPlayer($player);
+        // self::printPlayer($player);
         return $new;
     }
 
@@ -187,7 +185,7 @@ class Player extends _Player
         $new = new self();
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
         $new->setPlayer($player);
-        self::printPlayer($player);
+        // self::printPlayer($player);
         return $new;
     }
 
@@ -215,13 +213,145 @@ class Player extends _Player
     ["points"] = ' . $player->points . ',
     ["rank"] = "' . $player->rank . '",
     ["warning_percentage"] = ' . $player->warning_percentage . '
-}';
+}<br>';
+    }
+
+    /**
+     * @param $db PDO PDO of the database connection.
+     */
+    public function login($db)
+    {
+        if (!self::communityIdExists($db, $this->community_identifier)) {
+            exit('community_identifier does not exist.');
+        }
+        if (!self::steamIdExists($db, $this->steam_identifier)) {
+            exit('steam_identifier does not exist.');
+        }
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(2, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            exit('player was not found.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        if (Utility::int2bool($player->banned)) {
+            $player = $this->updatePlayer($db);
+            self::printPlayer($player);
+            unset($player);
+            exit('player is banned.');
+        }
+        if (Utility::int2bool($player->online)) {
+            $player = $this->updatePlayer($db);
+            self::printPlayer($player);
+            unset($player);
+            exit('player is already online.');
+        }
+        $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
+        $stmt->bindValue(1, true);
+        $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR, MAX_IDENTIFIER_LENGTH);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        $player = $this->updatePlayer($db);
+        self::printPlayer($player);
+        unset($player);
+    }
+
+    /**
+     * @param $db PDO PDO of the database connection.
+     */
+    public function logout($db)
+    {
+        if (!self::communityIdExists($db, $this->community_identifier)) {
+            exit('community_identifier does not exist.');
+        }
+        if (!self::steamIdExists($db, $this->steam_identifier)) {
+            exit('steam_identifier does not exist.');
+        }
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(2, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        if ($stmt->rowCount() < 1) {
+            exit('invalid credentials.');
+        }
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        if (Utility::int2bool($player->banned)) {
+            $player = $this->updatePlayer($db);
+            self::printPlayer($player);
+            unset($player);
+            exit('player is banned.');
+        }
+        if (!Utility::int2bool($player->online)) {
+            $player = $this->updatePlayer($db);
+            self::printPlayer($player);
+            unset($player);
+            exit('player is already offline.');
+        }
+        $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
+        $stmt->bindValue(1, false);
+        $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR, MAX_IDENTIFIER_LENGTH);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        $player = $this->updatePlayer($db);
+        self::printPlayer($player);
+        unset($player);
+    }
+
+    /**
+     * @param $db PDO PDO of the database connection.
+     * @throws Exception
+     */
+    public function register($db)
+    {
+        if (!Utility::isValidCommunityId($this->community_identifier)) {
+            throw new Exception('community_identifier is not valid.');
+        }
+        if (!Utility::isValidName($this->name)) {
+            throw new Exception('name is not valid.');
+        }
+        if (!Utility::isValidSteamId($this->steam_identifier)) {
+            throw new Exception('steam_identifier is not valid.');
+        }
+        if (self::communityIdExists($db, $this->community_identifier)) {
+            exit('community_identifier already exists.');
+        }
+        if (self::nameExists($db, $this->name)) {
+            exit('name already exists.');
+        }
+        if (self::steamIdExists($db, $this->steam_identifier)) {
+            exit('steam_identifier already exists.');
+        }
+        $stmt = $db->prepare('INSERT INTO players (community_identifier, joined_name, name, old_name, steam_identifier) VALUES (?, ?, ?, ?, ?)');
+        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
+        $stmt->bindParam(2, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
+        $stmt->bindParam(3, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
+        $stmt->bindParam(4, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
+        $stmt->bindParam(5, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
+        $success = $stmt->execute();
+        if (!$success) {
+            throw new PDOException('Failed to execute SQL query.');
+        }
+        $player = $this->updatePlayer($db);
+        self::printPlayer($player);
+        unset($player);
     }
 
     /**
      * @param $player _Player _Player object.
      */
     public function setPlayer($player) {
+        $this->identifier = $player->identifier;
         $this->community_identifier = $player->community_identifier;
         $this->name = $player->name;
         $this->steam_identifier = $player->steam_identifier;
@@ -243,132 +373,7 @@ class Player extends _Player
 
     /**
      * @param $db PDO PDO of the database connection.
-     */
-    public function login($db)
-    {
-        if (!self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier does not exist.');
-        }
-        if (!self::nameExists($db, $this->name)) {
-            exit('name does not exist.');
-        }
-        if (!self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier does not exist.');
-        }
-        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
-        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
-        $stmt->bindParam(2, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
-        $stmt->bindParam(3, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        if ($stmt->rowCount() < 1) {
-            exit('invalid credentials.');
-        }
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
-        if (Utility::int2bool($player->banned)) {
-            self::printPlayer($player);
-            unset($player);
-            exit('player is banned.');
-        }
-        if (Utility::int2bool($player->online)) {
-            self::printPlayer($player);
-            unset($player);
-            exit('player is already online.');
-        }
-        $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
-        $stmt->bindValue(1, true);
-        $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR, MAX_IDENTIFIER_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        $player = $this->updatePlayer($db); // self::getUpdatedPlayer($db, $this->community_identifier, $this->name, $this->steam_identifier);
-        self::printPlayer($player);
-        unset($player);
-    }
-
-    /**
-     * @param $db PDO PDO of the database connection.
-     */
-    public function logout($db)
-    {
-        if (!self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier does not exist.');
-        }
-        if (!self::nameExists($db, $this->name)) {
-            exit('name does not exist.');
-        }
-        if (!self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier does not exist.');
-        }
-        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
-        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
-        $stmt->bindParam(2, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
-        $stmt->bindParam(3, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        if ($stmt->rowCount() < 1) {
-            exit('invalid credentials.');
-        }
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
-        if ($player->banned) {
-            self::printPlayer($player);
-            unset($player);
-            exit('player is banned.');
-        }
-        if (!$player->online) {
-            self::printPlayer($player);
-            unset($player);
-            exit('player is already offline.');
-        }
-        $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
-        $stmt->bindValue(1, false);
-        $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR, MAX_IDENTIFIER_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        $player = $this->updatePlayer($db); // self::getUpdatedPlayer($db, $this->community_identifier, $this->name, $this->steam_identifier);
-        self::printPlayer($player);
-        unset($player);
-    }
-
-    /**
-     * @param $db PDO PDO of the database connection.
-     */
-    public function register($db)
-    {
-        if (self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier already exists.');
-        }
-        if (self::nameExists($db, $this->name)) {
-            exit('name already exists.');
-        }
-        if (self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier already exists.');
-        }
-        $stmt = $db->prepare('INSERT INTO players (community_identifier, joined_name, name, old_name, steam_identifier) VALUES (?, ?, ?, ?, ?)');
-        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
-        $stmt->bindParam(2, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
-        $stmt->bindParam(3, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
-        $stmt->bindParam(4, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
-        $stmt->bindParam(5, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        $player = $this->updatePlayer($db); // self::getUpdatedPlayer($db, $this->community_identifier, $this->name, $this->steam_identifier);
-        self::printPlayer($player);
-        unset($player);
-    }
-
-    /**
-     * @param $db PDO PDO of the database connection.
-     * @param $array array Key-value pair to update.
+     * @param $array array Key-value pair to update (ex. array(":name" => "NewName")).
      */
     public function update($db, $array) {
         if (!self::communityIdExists($db, $this->community_identifier)) {
@@ -380,10 +385,9 @@ class Player extends _Player
         if (!self::steamIdExists($db, $this->steam_identifier)) {
             exit('steam_identifier does not exist.');
         }
-        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND name=? AND steam_identifier=? LIMIT 1');
+        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
         $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
-        $stmt->bindParam(2, $this->name, PDO::PARAM_STR, MAX_NAME_LENGTH);
-        $stmt->bindParam(3, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
+        $stmt->bindParam(2, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
         $success = $stmt->execute();
         if (!$success) {
             throw new PDOException('Failed to execute SQL query.');
@@ -395,7 +399,7 @@ class Player extends _Player
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
         $statement = 'UPDATE players SET';
         foreach ($array as $key => $value) {
-            $statement = $statement . ' ' . $key . '=:' . $key;
+            $statement = $statement . ' ' . substr($key, 1) . '=' . $key;
         }
         $statement = $statement . ' WHERE identifier=:identifier';
         $array = array_merge($array, array(':identifier' => $player->identifier));
@@ -405,7 +409,7 @@ class Player extends _Player
             throw new PDOException('Failed to execute SQL query.');
         }
         unset($array);
-        $player = $this->updatePlayer($db); // self::getUpdatedPlayer($db, $this->community_identifier, $this->name, $this->steam_identifier);
+        $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
     }

@@ -31,7 +31,7 @@ class Utility
      */
     public static function bool2int($value)
     {
-        return $value ? 1 : 0;
+        return boolval($value) ? 1 : 0;
     }
 
     /**
@@ -40,7 +40,7 @@ class Utility
      */
     public static function int2bool($value)
     {
-        return self::clamp($value, 0, 1) === 1;
+        return self::clamp(intval($value), 1, 0) === 1;
     }
 
     /**
