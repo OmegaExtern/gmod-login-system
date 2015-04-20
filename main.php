@@ -1,5 +1,6 @@
 <?php
-error_reporting(E_ALL);
+// error_reporting(E_ALL);
+// date_default_timezone_set('Europe/Zagreb');
 if (!isset($_POST) || strtoupper($_SERVER['REQUEST_METHOD']) != 'POST') {
     exit('Invalid HTTP request.');
 }
@@ -12,22 +13,18 @@ require_once('Utility.php');
 $community_identifier = null;
 $name = null;
 $steam_identifier = null;
-function pass01(&$community_identifier, &$name, &$steam_identifier)
+function pass01(&$community_identifier, &$steam_identifier)
 {
     if (!isset($_POST['community_identifier']) || empty($_POST['community_identifier']) || !is_numeric($_POST['community_identifier'])) {
         exit('community_identifier is undefined.');
     }
-    if (!isset($_POST['name']) || empty($_POST['name']) || !is_string($_POST['name'])) {
-        exit('name is undefined.');
-    }
-    $name = Utility::sanitizeInput($_POST['name']);
     $community_identifier = strtoupper($_POST['community_identifier']);
     $steam_identifier = Utility::communityId2steamId($community_identifier);
 }
 
 switch (strtoupper($_POST['do'])) {
     case 'LOGIN':
-        pass01($community_identifier, $name, $steam_identifier);
+        pass01($community_identifier, $steam_identifier);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
             $player = new Player($community_identifier, $name, $steam_identifier);
@@ -39,7 +36,7 @@ switch (strtoupper($_POST['do'])) {
         }
         break;
     case 'LOGOUT':
-        pass01($community_identifier, $name, $steam_identifier);
+        pass01($community_identifier, $steam_identifier);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
             $player = new Player($community_identifier, $name, $steam_identifier);
@@ -51,7 +48,11 @@ switch (strtoupper($_POST['do'])) {
         }
         break;
     case 'REGISTER':
-        pass01($community_identifier, $name, $steam_identifier);
+        pass01($community_identifier, $steam_identifier);
+        if (!isset($_POST['name']) || empty($_POST['name']) || !is_string($_POST['name'])) {
+            exit('name is undefined.');
+        }
+        $name = Utility::sanitizeInput($_POST['name']);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
             $player = new Player($community_identifier, $name, $steam_identifier);
