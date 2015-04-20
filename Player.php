@@ -16,24 +16,10 @@ class _Player
 class Player extends _Player
 {
     /**
-     * @param $community_identifier string Community ID of the player.
-     * @param $name string Name of the player.
-     * @param $steam_identifier string Steam ID of the player.
+     * Player constructor.
      */
-    public function Player($community_identifier, $name, $steam_identifier)
+    public function __construct()
     {
-        if (!Utility::isValidCommunityId($community_identifier)) {
-            exit('community_identifier is not valid.');
-        }
-        $this->community_identifier = $community_identifier;
-        if (!Utility::isValidName($name)) {
-            exit('name is not valid.');
-        }
-        $this->name = $name;
-        if (!Utility::isValidSteamId($steam_identifier)) {
-            exit('steam_identifier is not valid.');
-        }
-        $this->steam_identifier = $steam_identifier;
     }
 
     /**
@@ -127,7 +113,7 @@ class Player extends _Player
     /**
      * @param $db PDO PDO of the database connection.
      * @param $community_identifier string Community ID of the player.
-     * @return null|_Player Returns _Player object on success; NULL on failure.
+     * @return null|Player Returns a new Player object on success; NULL on failure.
      * @throws Exception
      */
     public static function getPlayerByCommunityId($db, $community_identifier)
@@ -144,15 +130,17 @@ class Player extends _Player
         if ($stmt->rowCount() < 1) {
             return null;
         }
+        $new = new self();
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $new->setPlayer($player);
         self::printPlayer($player);
-        return $player;
+        return $new;
     }
 
     /**
      * @param $db PDO PDO of the database connection.
      * @param $name string Name of the player.
-     * @return null|_Player Returns _Player object on success; NULL on failure.
+     * @return null|Player Returns a new Player object on success; NULL on failure.
      * @throws Exception
      */
     public static function getPlayerByName($db, $name)
@@ -169,15 +157,17 @@ class Player extends _Player
         if ($stmt->rowCount() < 1) {
             return null;
         }
+        $new = new self();
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $new->setPlayer($player);
         self::printPlayer($player);
-        return $player;
+        return $new;
     }
 
     /**
      * @param $db PDO PDO of the database connection.
      * @param $steam_identifier string Steam ID of the player.
-     * @return null|_Player Returns _Player object on success; NULL on failure.
+     * @return null|Player Returns a new Player object on success; NULL on failure.
      * @throws Exception
      */
     public static function getPlayerBySteamId($db, $steam_identifier)
@@ -194,9 +184,11 @@ class Player extends _Player
         if ($stmt->rowCount() < 1) {
             return null;
         }
+        $new = new self();
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $new->setPlayer($player);
         self::printPlayer($player);
-        return $player;
+        return $new;
     }
 
     /**
@@ -224,6 +216,29 @@ class Player extends _Player
     ["rank"] = "' . $player->rank . '",
     ["warning_percentage"] = ' . $player->warning_percentage . '
 }';
+    }
+
+    /**
+     * @param $player _Player _Player object.
+     */
+    public function setPlayer($player) {
+        $this->community_identifier = $player->community_identifier;
+        $this->name = $player->name;
+        $this->steam_identifier = $player->steam_identifier;
+        $this->banned = $player->banned;
+        $this->banned_date_time = $player->banned_date_time;
+        $this->banned_expire_date_time = $player->banned_expire_date_time;
+        $this->banned_reason = $player->banned_reason;
+        $this->date_time = $player->date_time;
+        $this->experience = $player->experience;
+        $this->joined_date_time = $player->joined_date_time;
+        $this->joined_name = $player->joined_name;
+        $this->level = $player->level;
+        $this->old_name = $player->old_name;
+        $this->online = $player->online;
+        $this->points = $player->points;
+        $this->rank = $player->rank;
+        $this->warning_percentage = $player->warning_percentage;
     }
 
     /**
@@ -408,23 +423,7 @@ class Player extends _Player
             throw new PDOException('Failed to execute SQL query.');
         }
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
-        $this->community_identifier = $player->community_identifier;
-        $this->name = $player->name;
-        $this->steam_identifier = $player->steam_identifier;
-        $this->banned = $player->banned;
-        $this->banned_date_time = $player->banned_date_time;
-        $this->banned_expire_date_time = $player->banned_expire_date_time;
-        $this->banned_reason = $player->banned_reason;
-        $this->date_time = $player->date_time;
-        $this->experience = $player->experience;
-        $this->joined_date_time = $player->joined_date_time;
-        $this->joined_name = $player->joined_name;
-        $this->level = $player->level;
-        $this->old_name = $player->old_name;
-        $this->online = $player->online;
-        $this->points = $player->points;
-        $this->rank = $player->rank;
-        $this->warning_percentage = $player->warning_percentage;
+        $this->setPlayer($player);
         return $player;
     }
 }

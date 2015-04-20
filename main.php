@@ -11,7 +11,6 @@ require_once('Constants.php');
 require_once('Player.php');
 require_once('Utility.php');
 $community_identifier = null;
-$name = null;
 $steam_identifier = null;
 function pass01(&$community_identifier, &$steam_identifier)
 {
@@ -27,7 +26,7 @@ switch (strtoupper($_POST['do'])) {
         pass01($community_identifier, $steam_identifier);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
-            $player = new Player($community_identifier, $name, $steam_identifier);
+            $player = Player::getPlayerByCommunityId($db, $community_identifier);
             $player->login($db);
             unset($player);
             unset($db);
@@ -39,7 +38,7 @@ switch (strtoupper($_POST['do'])) {
         pass01($community_identifier, $steam_identifier);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
-            $player = new Player($community_identifier, $name, $steam_identifier);
+            $player = Player::getPlayerByCommunityId($db, $community_identifier);
             $player->logout($db);
             unset($player);
             unset($db);
@@ -55,7 +54,10 @@ switch (strtoupper($_POST['do'])) {
         $name = Utility::sanitizeInput($_POST['name']);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
-            $player = new Player($community_identifier, $name, $steam_identifier);
+            $player = new Player();
+            $player->community_identifier = $community_identifier;
+            $player->name = $name;
+            $player->steam_identifier = $steam_identifier;
             $player->register($db);
             unset($player);
             unset($db);
