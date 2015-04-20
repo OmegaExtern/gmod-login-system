@@ -260,6 +260,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
+        echo "login successful.<br>";
     }
 
     /**
@@ -306,6 +307,31 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
+        echo "logout successful.<br>";
+    }
+
+    public function printThis()
+    {
+        echo 'return {
+    ["identifier"] = ' . $this->identifier . ',
+    ["community_identifier"] = "' . $this->community_identifier . '",
+    ["name"] = "' . $this->name . '",
+    ["steam_identifier"] = "' . $this->steam_identifier . '",
+    ["banned"] = ' . $this->banned . ',
+    ["banned_date_time"] = "' . $this->banned_date_time . '",
+    ["banned_expire_date_time"] = "' . $this->banned_expire_date_time . '",
+    ["banned_reason"] = "' . $this->banned_reason . '",
+    ["date_time"] = "' . $this->date_time . '",
+    ["experience"] = ' . $this->experience . ',
+    ["joined_date_time"] = "' . $this->joined_date_time . '",
+    ["joined_name"] = "' . $this->joined_name . '",
+    ["level"] = ' . $this->level . ',
+    ["old_name"] = "' . $this->old_name . '",
+    ["online"] = ' . $this->online . ',
+    ["points"] = ' . $this->points . ',
+    ["rank"] = "' . $this->rank . '",
+    ["warning_percentage"] = ' . $this->warning_percentage . '
+}<br>';
     }
 
     /**
@@ -345,6 +371,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
+        echo "registration successful.<br>";
     }
 
     /**

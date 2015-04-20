@@ -20,7 +20,7 @@ hook.Add("OnPlayerChat", this.hook_prefix .. "OnPlayerChat", function(ply, text)
     end
     this.tempe = this.temp:Explode(" ")
     if this.tempe[1] == this.chat_prefix then
-        if #this.tempe < 2 then
+        if #this.tempe < 2 or #this.tempe[2]:len() < 5 then
             return
         end
         this.tempe[1] = this.tempe[1] .. this.tempe[2]:upper()
@@ -32,13 +32,13 @@ hook.Add("OnPlayerChat", this.hook_prefix .. "OnPlayerChat", function(ply, text)
     end
     local community_identifier = ply:SteamID64()
     switch(this.tempe[1],
-        case("!LOGIN", function()
+        case(this.chat_prefix .. "LOGIN", function()
                 sys.login(community_identifier)
             end, true),
-        case("!LOGOUT", function()
+        case(this.chat_prefix .. "LOGOUT", function()
                 sys.logout(community_identifier)
             end, true),
-        case("!REGISTER", function()
+        case(this.chat_prefix .. "REGISTER", function()
                 local name = this.tempe[2]
                 sys.register(community_identifier, name)
             end, true)

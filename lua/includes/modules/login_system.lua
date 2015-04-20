@@ -6,15 +6,18 @@ login = function(community_identifier)
     HTTP(
         {
             failed = function(reason)
-                error(reason)
+                error("login: " .. reason)
             end,
             success = function(code, body)
-                print(body)
+                local bodye = body:Explode("<br>")
+                PrintTable(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2))())
+                print(bodye[2])
             end,
             method = METHOD,
             url = URL,
             parameters =
             {
+                ["do"] = "LOGIN",
                 ["community_identifier"] = community_identifier
             }
         })
@@ -23,15 +26,18 @@ logout = function(community_identifier)
     HTTP(
         {
             failed = function(reason)
-                error(reason)
+                error("logout: " .. reason)
             end,
             success = function(code, body)
-                print(body)
+                local bodye = body:Explode("<br>")
+                PrintTable(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2))())
+                print(bodye[2])
             end,
             method = METHOD,
             url = URL,
             parameters =
             {
+                ["do"] = "LOGOUT",
                 ["community_identifier"] = community_identifier
             }
         })
@@ -40,15 +46,18 @@ register = function(community_identifier, name)
     HTTP(
         {
             failed = function(reason)
-                error(reason)
+                error("register: " .. reason)
             end,
             success = function(code, body)
-                print(body)
+                local bodye = body:Explode("<br>")
+                PrintTable(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2))())
+                print(bodye[2])
             end,
             method = METHOD,
             url = URL,
             parameters =
             {
+                ["do"] = "REGISTER",
                 ["community_identifier"] = community_identifier,
                 ["name"] = name
             }
