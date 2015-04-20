@@ -58,7 +58,7 @@ class Utility
      */
     public static function isValidCommunityId($community_identifier)
     {
-        return preg_match('/^(7656119[0-9]{10})$/A', strval($community_identifier)) === 1;
+        return preg_match('/' . COMMUNITY_ID_REGEX . '/A', strval($community_identifier)) === 1;
     }
 
     /**
@@ -67,7 +67,7 @@ class Utility
      */
     public static function isValidName($name)
     {
-        return preg_match('/' . NAME_PATTERN . '/A', strval($name)) === 1;
+        return preg_match('/' . NAME_REGEX . '/A', strval($name)) === 1;
     }
 
     /**
@@ -76,7 +76,7 @@ class Utility
      */
     public static function isValidSteamId($steam_identifier)
     {
-        return preg_match('/^(STEAM_0:[0-1]:[0-9]{1,9})$/A', strval($steam_identifier)) === 1;
+        return preg_match('/' . STEAM_ID_REGEX . '/A', strval($steam_identifier)) === 1;
     }
 
     /**
