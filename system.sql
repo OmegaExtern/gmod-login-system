@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 20, 2015 at 07:23 PM
+-- Generation Time: Apr 21, 2015 at 06:36 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.8
 
@@ -70,8 +70,10 @@ CREATE TABLE IF NOT EXISTS `players` (
 ALTER TABLE `players`
 ADD PRIMARY KEY (`identifier`),
 ADD UNIQUE KEY `community_identifier` (`community_identifier`),
+ADD UNIQUE KEY `joined_name` (`joined_name`),
 ADD UNIQUE KEY `name` (`name`),
-ADD UNIQUE KEY `steam_identifier` (`steam_identifier`);
+ADD UNIQUE KEY `steam_identifier` (`steam_identifier`),
+ADD KEY `identifier` (`identifier`);
 
 --
 -- AUTO_INCREMENT for dumped tables
