@@ -13,7 +13,78 @@ require_once('Utility.php');
  */
 class _Player
 {
-    public $banned, $banned_date_time, $banned_expire_date_time, $banned_reason, $community_identifier, $date_time, $experience, $identifier, $joined_date_time, $joined_name, $level, $name, $old_name, $online, $points, $rank, $steam_identifier, $warning_percentage;
+    /**
+     * @var int Determines if the player is currently banned.
+     */
+    public $banned;
+    /**
+     * @var string DateTime when ban have occurred.
+     */
+    public $banned_date_time;
+    /**
+     * @var string DateTime when ban will lift.
+     */
+    public $banned_expire_date_time;
+    /**
+     * @var string Reason of ban.
+     */
+    public $banned_reason;
+    /**
+     * @var string Community identifier of the player.
+     */
+    public $community_identifier;
+    /**
+     * @var string DateTime of the most recent query.
+     */
+    public $date_time;
+    /**
+     * @var string Current player's total experience.
+     */
+    public $experience;
+    /**
+     * @var string Primary and unique identifier of the player.
+     */
+    public $identifier;
+    /**
+     * @var string DateTime record when the player has joined.
+     */
+    public $joined_date_time;
+    /**
+     * @var string Original player name record.
+     */
+    public $joined_name;
+    /**
+     * @var int Current player's level.
+     */
+    public $level;
+    /**
+     * @var string Current player's name.
+     */
+    public $name;
+    /**
+     * @var string Previous player's name.
+     */
+    public $old_name;
+    /**
+     * @var int Determines if the player is currently online.
+     */
+    public $online;
+    /**
+     * @var string Amount of points owned by the player.
+     */
+    public $points;
+    /**
+     * @var Rank Current player's rank/group.
+     */
+    public $rank;
+    /**
+     * @var string Steam identifier of the player.
+     */
+    public $steam_identifier;
+    /**
+     * @var int Warning percentage of the player.
+     */
+    public $warning_percentage;
 }
 
 /**
@@ -30,12 +101,12 @@ class Player extends _Player
 
     /**
      * Determines whether community ID already exists or not.
-     * @param $db PDO PDO of the database connection.
+     * @param $db PDO Valid PDO of the database connection.
      * @param $community_identifier string Community ID of the player to check.
      * @return bool Returns TRUE if the given community ID exists; otherwise FALSE.
-     * @throws Exception
+     * @throws Exception If $community_identifier is not valid.
      */
-    public static function communityIdExists($db, $community_identifier)
+    public static function communityIdExists(PDO $db, $community_identifier)
     {
         if (!Utility::isValidCommunityId($community_identifier)) {
             throw new Exception('community_identifier is not valid.');
@@ -51,12 +122,12 @@ class Player extends _Player
 
     /**
      * Determines whether name already exists or not.
-     * @param $db PDO PDO of the database connection.
+     * @param $db PDO Valid PDO of the database connection.
      * @param $name string Name of the player to check.
      * @return bool Returns TRUE if the given name exists; otherwise FALSE.
-     * @throws Exception
+     * @throws Exception If $name is not valid.
      */
-    public static function nameExists($db, $name)
+    public static function nameExists(PDO $db, $name)
     {
         if (!Utility::isValidName($name)) {
             throw new Exception('name is not valid.');
@@ -72,12 +143,12 @@ class Player extends _Player
 
     /**
      * Determines whether Steam ID already exists or not.
-     * @param $db PDO PDO of the database connection.
+     * @param $db PDO Valid PDO of the database connection.
      * @param $steam_identifier string Steam ID of the player to check.
      * @return bool Returns TRUE if the given Steam ID exists; otherwise FALSE.
-     * @throws Exception
+     * @throws Exception If $steam_identifier is not valid.
      */
-    public static function steamIdExists($db, $steam_identifier)
+    public static function steamIdExists(PDO $db, $steam_identifier)
     {
         if (!Utility::isValidSteamId($steam_identifier)) {
             throw new Exception('steam_identifier is not valid.');
@@ -92,12 +163,12 @@ class Player extends _Player
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
+     * @param $db PDO Valid PDO of the database connection.
      * @param $community_identifier string Community ID of the player.
      * @return null|Player Returns a new Player object on success; NULL on failure.
-     * @throws Exception
+     * @throws Exception If $community_identifier is not valid.
      */
-    public static function getPlayerByCommunityId($db, $community_identifier)
+    public static function getPlayerByCommunityId(PDO $db, $community_identifier)
     {
         if (!Utility::isValidCommunityId($community_identifier)) {
             throw new Exception('community_identifier is not valid.');
@@ -119,12 +190,12 @@ class Player extends _Player
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
+     * @param $db PDO Valid PDO of the database connection.
      * @param $name string Name of the player.
      * @return null|Player Returns a new Player object on success; NULL on failure.
-     * @throws Exception
+     * @throws Exception If $name is not valid.
      */
-    public static function getPlayerByName($db, $name)
+    public static function getPlayerByName(PDO $db, $name)
     {
         if (!Utility::isValidName($name)) {
             throw new Exception('name is not valid.');
@@ -146,12 +217,12 @@ class Player extends _Player
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
+     * @param $db PDO Valid PDO of the database connection.
      * @param $steam_identifier string Steam ID of the player.
      * @return null|Player Returns a new Player object on success; NULL on failure.
-     * @throws Exception
+     * @throws Exception If $steam_identifier is not valid.
      */
-    public static function getPlayerBySteamId($db, $steam_identifier)
+    public static function getPlayerBySteamId(PDO $db, $steam_identifier)
     {
         if (!Utility::isValidSteamId($steam_identifier)) {
             throw new Exception('steam_identifier is not valid.');
@@ -173,36 +244,38 @@ class Player extends _Player
     }
 
     /**
-     * @param $player _Player _Player object.
+     * Echos _Player object as a Lua table.
+     * @param $player _Player _Player object to print.
      */
     public static function printPlayer($player)
     {
         echo 'return {
-    ["identifier"] = ' . $player->identifier . ',
-    ["community_identifier"] = "' . $player->community_identifier . '",
-    ["name"] = "' . $player->name . '",
-    ["steam_identifier"] = "' . $player->steam_identifier . '",
     ["banned"] = ' . $player->banned . ',
     ["banned_date_time"] = "' . $player->banned_date_time . '",
     ["banned_expire_date_time"] = "' . $player->banned_expire_date_time . '",
     ["banned_reason"] = "' . $player->banned_reason . '",
+    ["community_identifier"] = "' . $player->community_identifier . '",
     ["date_time"] = "' . $player->date_time . '",
     ["experience"] = ' . $player->experience . ',
+    ["identifier"] = ' . $player->identifier . ',
     ["joined_date_time"] = "' . $player->joined_date_time . '",
     ["joined_name"] = "' . $player->joined_name . '",
     ["level"] = ' . $player->level . ',
+    ["name"] = "' . $player->name . '",
     ["old_name"] = "' . $player->old_name . '",
     ["online"] = ' . $player->online . ',
     ["points"] = ' . $player->points . ',
     ["rank"] = "' . $player->rank . '",
+    ["steam_identifier"] = "' . $player->steam_identifier . '",
     ["warning_percentage"] = ' . $player->warning_percentage . '
 }<br>';
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
+     * Attempts to login.
+     * @param $db PDO Valid PDO of the database connection.
      */
-    public function login($db)
+    public function login(PDO $db)
     {
         if (!self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier does not exist.');
@@ -247,9 +320,10 @@ class Player extends _Player
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
+     * Attempts to logout.
+     * @param $db PDO Valid PDO of the database connection.
      */
-    public function logout($db)
+    public function logout(PDO $db)
     {
         if (!self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier does not exist.');
@@ -293,35 +367,39 @@ class Player extends _Player
         echo 'logout successful.';
     }
 
+    /**
+     * Echos $this/Player object as a Lua table.
+     */
     public function printThis()
     {
         echo 'return {
-    ["identifier"] = ' . $this->identifier . ',
-    ["community_identifier"] = "' . $this->community_identifier . '",
-    ["name"] = "' . $this->name . '",
-    ["steam_identifier"] = "' . $this->steam_identifier . '",
     ["banned"] = ' . $this->banned . ',
     ["banned_date_time"] = "' . $this->banned_date_time . '",
     ["banned_expire_date_time"] = "' . $this->banned_expire_date_time . '",
     ["banned_reason"] = "' . $this->banned_reason . '",
+    ["community_identifier"] = "' . $this->community_identifier . '",
     ["date_time"] = "' . $this->date_time . '",
     ["experience"] = ' . $this->experience . ',
+    ["identifier"] = ' . $this->identifier . ',
     ["joined_date_time"] = "' . $this->joined_date_time . '",
     ["joined_name"] = "' . $this->joined_name . '",
     ["level"] = ' . $this->level . ',
+    ["name"] = "' . $this->name . '",
     ["old_name"] = "' . $this->old_name . '",
     ["online"] = ' . $this->online . ',
     ["points"] = ' . $this->points . ',
     ["rank"] = "' . $this->rank . '",
+    ["steam_identifier"] = "' . $this->steam_identifier . '",
     ["warning_percentage"] = ' . $this->warning_percentage . '
 }<br>';
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
-     * @throws Exception
+     * Attempts to register.
+     * @param $db PDO Valid PDO of the database connection.
+     * @throws Exception If $this->community_identifier or $this->name or either $this->steam_identifier is not valid.
      */
-    public function register($db)
+    public function register(PDO $db)
     {
         if (!Utility::isValidCommunityId($this->community_identifier)) {
             throw new Exception('community_identifier is not valid.');
@@ -358,35 +436,37 @@ class Player extends _Player
     }
 
     /**
+     * Assigns properties of _Player object to $this/Player object.
      * @param $player _Player _Player object.
      */
     public function setPlayer($player)
     {
-        $this->identifier = $player->identifier;
-        $this->community_identifier = $player->community_identifier;
-        $this->name = $player->name;
-        $this->steam_identifier = $player->steam_identifier;
         $this->banned = $player->banned;
         $this->banned_date_time = $player->banned_date_time;
         $this->banned_expire_date_time = $player->banned_expire_date_time;
         $this->banned_reason = $player->banned_reason;
+        $this->community_identifier = $player->community_identifier;
         $this->date_time = $player->date_time;
         $this->experience = $player->experience;
+        $this->identifier = $player->identifier;
         $this->joined_date_time = $player->joined_date_time;
         $this->joined_name = $player->joined_name;
         $this->level = $player->level;
+        $this->name = $player->name;
         $this->old_name = $player->old_name;
         $this->online = $player->online;
         $this->points = $player->points;
         $this->rank = $player->rank;
+        $this->steam_identifier = $player->steam_identifier;
         $this->warning_percentage = $player->warning_percentage;
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
+     * Attempts to update $this/Player with new values set from within an $array.
+     * @param $db PDO Valid PDO of the database connection.
      * @param $array array Key-value pair to update (ex. array(':name' => 'NewName')).
      */
-    public function update($db, $array)
+    public function update(PDO $db, $array)
     {
         if (!self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier does not exist.');
@@ -427,10 +507,11 @@ class Player extends _Player
     }
 
     /**
-     * @param $db PDO PDO of the database connection.
+     * Synchronizes $this/Player with server.
+     * @param $db PDO Valid PDO of the database connection.
      * @return null|_Player Returns _Player object on success; NULL on failure.
      */
-    public function updatePlayer($db)
+    public function updatePlayer(PDO $db)
     {
         $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
         $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
