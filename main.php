@@ -26,7 +26,9 @@ switch (strtoupper($_POST['do'])) {
         pass01($community_identifier, $steam_identifier);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
-            $player = Player::getPlayerByCommunityId($db, $community_identifier);
+            $player = new Player();
+            $player->community_identifier = $community_identifier;
+            $player->steam_identifier = $steam_identifier;
             $player->login($db);
             unset($player);
             unset($db);
@@ -38,7 +40,9 @@ switch (strtoupper($_POST['do'])) {
         pass01($community_identifier, $steam_identifier);
         try {
             $db = new PDO(DATABASE_DNS, DATABASE_USERNAME, DATABASE_PASSWD, DATABASE_OPTIONS);
-            $player = Player::getPlayerByCommunityId($db, $community_identifier);
+            $player = new Player();
+            $player->community_identifier = $community_identifier;
+            $player->steam_identifier = $steam_identifier;
             $player->logout($db);
             unset($player);
             unset($db);
