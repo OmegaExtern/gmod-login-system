@@ -23,7 +23,7 @@ abstract class Enum
         if ($strict) {
             return array_key_exists($name, $constants);
         }
-        $keys = array_map("strtoupper", array_keys($constants));
+        $keys = array_map('strtoupper', array_keys($constants));
         return in_array(strtolower($name), $keys);
     }
 

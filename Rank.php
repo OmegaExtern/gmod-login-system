@@ -1,5 +1,5 @@
 <?php
-require_once("Enum.php");
+require_once('Enum.php');
 
 interface IRank
 {
@@ -19,9 +19,9 @@ abstract class Rank extends Enum implements IRank
      * @param string $name Name of rank.
      * @return int|mixed Returns rank priority with the given name.
      */
-    public static function getRankPriorityByName($name = "UNKNOWN")
+    public static function getRankPriorityByName($name = 'UNKNOWN')
     {
-        $rank = constant("IRank::" . strtoupper(strval($name)));
+        $rank = constant('IRank::' . strtoupper(strval($name)));
         if ($rank === null) {
             return IRank::UNKNOWN;
         }
@@ -39,8 +39,8 @@ abstract class Rank extends Enum implements IRank
                 return strval($key);
             }
         }
-        return "UNKNOWN";
+        return 'UNKNOWN';
     }
 }
 
-// echo Rank::getRankNameByPriority(1) . "<br>". Rank::getRankPriorityByName("MEMBER");
+// echo Rank::getRankNameByPriority(1) . '<br>'. Rank::getRankPriorityByName('MEMBER');

@@ -20,10 +20,11 @@ hook.Add("OnPlayerChat", this.hook_prefix .. "OnPlayerChat", function(ply, text)
     end
     this.tempe = string.Explode(" ", this.temp)
     if this.tempe[1] == this.chat_prefix then
-        if #this.tempe < 2 or #this.tempe[2]:len() < 5 then
+        if #this.tempe < 2 or this.tempe[2]:len() < 5 then
             return
         end
         this.tempe[1] = this.tempe[1] .. this.tempe[2]:upper()
+        table.remove(this.tempe, 2)
     else
         if #this.tempe < 1 then
             return
@@ -34,8 +35,6 @@ hook.Add("OnPlayerChat", this.hook_prefix .. "OnPlayerChat", function(ply, text)
     print(Format("community_identifier=%s", community_identifier))
     print("PrintTable(this):")
     PrintTable(this)
-    print("PrintTable(this.tempe):")
-    PrintTable(this.tempe)
     switch(this.tempe[1],
         case(this.chat_prefix .. "LOGIN", function()
             print(Format("sys.login(%s):", community_identifier))

@@ -17,7 +17,7 @@ login = function(community_identifier)
             local bodye = string.Explode("<br>", body)
             print("PrintTable(bodye):")
             PrintTable(bodye)
-            local succ, ret = pcall(CompileString(bodye[1], string.sub(debug.getinfo(1, "S").source, 2)))
+            local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
             if not succ then
                 error(Format("%s(%s): %s", func_name, community_identifier, ret))
             end
@@ -28,7 +28,7 @@ login = function(community_identifier)
         url = URL,
         parameters =
         {
-            ["do"] = string.upper(func_name),
+            ["do"] = func_name:upper(),
             ["community_identifier"] = community_identifier
         }
     })
@@ -48,7 +48,7 @@ logout = function(community_identifier)
             local bodye = string.Explode("<br>", body)
             print("PrintTable(bodye):")
             PrintTable(bodye)
-            local succ, ret = pcall(CompileString(bodye[1], string.sub(debug.getinfo(1, "S").source, 2)))
+            local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
             if not succ then
                 error(Format("%s(%s): %s", func_name, community_identifier, ret))
             end
@@ -59,7 +59,7 @@ logout = function(community_identifier)
         url = URL,
         parameters =
         {
-            ["do"] = string.upper(func_name),
+            ["do"] = func_name:upper(),
             ["community_identifier"] = community_identifier
         }
     })
@@ -79,7 +79,7 @@ register = function(community_identifier, name)
             local bodye = string.Explode("<br>", body)
             print("PrintTable(bodye):")
             PrintTable(bodye)
-            local succ, ret = pcall(CompileString(bodye[1], string.sub(debug.getinfo(1, "S").source, 2)))
+            local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
             if not succ then
                 error(Format("%s(%s, %s): %s", func_name, community_identifier, name, ret))
             end
@@ -90,7 +90,7 @@ register = function(community_identifier, name)
         url = URL,
         parameters =
         {
-            ["do"] = string.upper(func_name),
+            ["do"] = func_name:upper(),
             ["community_identifier"] = community_identifier,
             ["name"] = name
         }

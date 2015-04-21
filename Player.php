@@ -103,7 +103,7 @@ class Player extends _Player
             return null;
         }
         $new = new self();
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         $new->setPlayer($player);
         // self::printPlayer($player);
         return $new;
@@ -130,7 +130,7 @@ class Player extends _Player
             return null;
         }
         $new = new self();
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         $new->setPlayer($player);
         // self::printPlayer($player);
         return $new;
@@ -157,7 +157,7 @@ class Player extends _Player
             return null;
         }
         $new = new self();
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         $new->setPlayer($player);
         // self::printPlayer($player);
         return $new;
@@ -184,7 +184,7 @@ class Player extends _Player
             return null;
         }
         $new = new self();
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         $new->setPlayer($player);
         // self::printPlayer($player);
         return $new;
@@ -238,7 +238,7 @@ class Player extends _Player
         if ($stmt->rowCount() < 1) {
             exit('player was not found.');
         }
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         if (Utility::int2bool($player->banned)) {
             $player = $this->updatePlayer($db);
             self::printPlayer($player);
@@ -261,7 +261,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
-        echo "login successful.";
+        echo 'login successful.';
     }
 
     /**
@@ -285,7 +285,7 @@ class Player extends _Player
         if ($stmt->rowCount() < 1) {
             exit('invalid credentials.');
         }
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         if (Utility::int2bool($player->banned)) {
             $player = $this->updatePlayer($db);
             self::printPlayer($player);
@@ -308,7 +308,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
-        echo "logout successful.";
+        echo 'logout successful.';
     }
 
     public function printThis()
@@ -372,7 +372,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
-        echo "registration successful.";
+        echo 'registration successful.';
     }
 
     /**
@@ -402,7 +402,7 @@ class Player extends _Player
 
     /**
      * @param $db PDO PDO of the database connection.
-     * @param $array array Key-value pair to update (ex. array(":name" => "NewName")).
+     * @param $array array Key-value pair to update (ex. array(':name' => 'NewName')).
      */
     public function update($db, $array)
     {
@@ -426,7 +426,7 @@ class Player extends _Player
         if ($array_count < 1) {
             throw new InvalidArgumentException('array does not have any valid key-value pair(s).');
         }
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         $statement = 'UPDATE players SET';
         foreach ($array as $key => $value) {
             $statement = $statement . ' ' . substr($key, 1) . '=' . $key;
@@ -457,7 +457,7 @@ class Player extends _Player
         if (!$success) {
             throw new PDOException('Failed to execute SQL query.');
         }
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, "_Player")[0];
+        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         $this->setPlayer($player);
         return $player;
     }
