@@ -1,3 +1,9 @@
+--[[
+-- login_system.lua
+-- License: The MIT License (MIT) < http://opensource.org/licenses/MIT >
+-- Author: OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
+--]]
+
 module("login_system", package.seeall)
 -- Local/private functions & variables
 local URL, METHOD = "http://localhost:63342/gmod-login-system/main.php", "post"

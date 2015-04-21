@@ -1,3 +1,9 @@
+--[[
+-- switch_statement.lua
+-- License: The MIT License (MIT) < http://opensource.org/licenses/MIT >
+-- Author: OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
+--]]
+
 module("switch_statement", package.seeall)
 -- Global/public functions
 case = function(case, func, breakCase)

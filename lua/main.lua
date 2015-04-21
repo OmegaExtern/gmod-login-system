@@ -1,3 +1,9 @@
+--[[
+-- main.lua
+-- License: The MIT License (MIT) < http://opensource.org/licenses/MIT >
+-- Author: OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
+--]]
+
 require("login_system")
 local sys = login_system
 require("switch_statement")

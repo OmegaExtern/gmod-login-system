@@ -1,4 +1,10 @@
 <?php
+/**
+ * main.php
+ * @license The MIT License (MIT) < http://opensource.org/licenses/MIT >
+ * @author OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
+ */
+
 // error_reporting(E_ALL);
 // date_default_timezone_set('Europe/Zagreb');
 if (!isset($_POST) || strtoupper($_SERVER['REQUEST_METHOD']) != 'POST') {

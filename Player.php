@@ -1,4 +1,10 @@
 <?php
+/**
+ * Player.php
+ * @license The MIT License (MIT) < http://opensource.org/licenses/MIT >
+ * @author OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
+ */
+
 require_once('Constants.php');
 require_once('Utility.php');
 
@@ -7,7 +13,7 @@ require_once('Utility.php');
  */
 class _Player
 {
-    public $identifier, $community_identifier, $name, $steam_identifier, $banned, $banned_date_time, $banned_expire_date_time, $banned_reason, $date_time, $experience, $joined_date_time, $joined_name, $level, $old_name, $online, $points, $rank, $warning_percentage;
+    public $banned, $banned_date_time, $banned_expire_date_time, $banned_reason, $community_identifier, $date_time, $experience, $identifier, $joined_date_time, $joined_name, $level, $name, $old_name, $online, $points, $rank, $steam_identifier, $warning_percentage;
 }
 
 /**
@@ -23,6 +29,7 @@ class Player extends _Player
     }
 
     /**
+     * Determines whether community ID already exists or not.
      * @param $db PDO PDO of the database connection.
      * @param $community_identifier string Community ID of the player to check.
      * @return bool Returns TRUE if the given community ID exists; otherwise FALSE.
@@ -43,6 +50,7 @@ class Player extends _Player
     }
 
     /**
+     * Determines whether name already exists or not.
      * @param $db PDO PDO of the database connection.
      * @param $name string Name of the player to check.
      * @return bool Returns TRUE if the given name exists; otherwise FALSE.
@@ -63,6 +71,7 @@ class Player extends _Player
     }
 
     /**
+     * Determines whether Steam ID already exists or not.
      * @param $db PDO PDO of the database connection.
      * @param $steam_identifier string Steam ID of the player to check.
      * @return bool Returns TRUE if the given Steam ID exists; otherwise FALSE.
@@ -80,33 +89,6 @@ class Player extends _Player
             throw new PDOException('Failed to execute SQL query.');
         }
         return $stmt->rowCount() > 0;
-    }
-
-    /**
-     * @param $db PDO PDO of the database connection.
-     * @param $community_identifier string Community ID of the player.
-     * @return null|Player Returns a new Player object on success; NULL on failure.
-     * @throws Exception
-     */
-    public static function getUpdatedPlayer($db, $community_identifier)
-    {
-        if (!Utility::isValidCommunityId($community_identifier)) {
-            throw new Exception('community_identifier is not valid.');
-        }
-        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? LIMIT 1');
-        $stmt->bindParam(1, $community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        if ($stmt->rowCount() < 1) {
-            return null;
-        }
-        $new = new self();
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
-        $new->setPlayer($player);
-        // self::printPlayer($player);
-        return $new;
     }
 
     /**
