@@ -33,15 +33,14 @@ hook.Add("OnPlayerChat", this.hook_prefix .. "OnPlayerChat", function(ply, text)
     local community_identifier = ply:SteamID64()
     switch(this.tempe[1],
         case(this.chat_prefix .. "LOGIN", function()
-                sys.login(community_identifier)
-            end, true),
+            sys.login(community_identifier)
+        end, true),
         case(this.chat_prefix .. "LOGOUT", function()
-                sys.logout(community_identifier)
-            end, true),
+            sys.logout(community_identifier)
+        end, true),
         case(this.chat_prefix .. "REGISTER", function()
-                local name = this.tempe[2]
-                sys.register(community_identifier, name)
-            end, true)
-    )
+            local name = this.tempe[2]
+            sys.register(community_identifier, name)
+        end, true))
 end)
 collectgarbage()

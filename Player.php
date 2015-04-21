@@ -88,7 +88,8 @@ class Player extends _Player
      * @return null|Player Returns a new Player object on success; NULL on failure.
      * @throws Exception
      */
-    public static function getUpdatedPlayer($db, $community_identifier) {
+    public static function getUpdatedPlayer($db, $community_identifier)
+    {
         if (!Utility::isValidCommunityId($community_identifier)) {
             throw new Exception('community_identifier is not valid.');
         }
@@ -377,7 +378,8 @@ class Player extends _Player
     /**
      * @param $player _Player _Player object.
      */
-    public function setPlayer($player) {
+    public function setPlayer($player)
+    {
         $this->identifier = $player->identifier;
         $this->community_identifier = $player->community_identifier;
         $this->name = $player->name;
@@ -402,7 +404,8 @@ class Player extends _Player
      * @param $db PDO PDO of the database connection.
      * @param $array array Key-value pair to update (ex. array(":name" => "NewName")).
      */
-    public function update($db, $array) {
+    public function update($db, $array)
+    {
         if (!self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier does not exist.');
         }
@@ -445,7 +448,8 @@ class Player extends _Player
      * @param $db PDO PDO of the database connection.
      * @return null|_Player Returns _Player object on success; NULL on failure.
      */
-    public function updatePlayer($db) {
+    public function updatePlayer($db)
+    {
         $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
         $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
         $stmt->bindParam(2, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
