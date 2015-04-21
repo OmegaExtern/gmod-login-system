@@ -14,17 +14,12 @@ class Utility
 {
     const Long = '76561197960265728';
 
-    /*public static $first;
-
-    private static function Utility() {
-        self::$first = bcadd(self::Long, '1');
-    }*/
-
     /**
+     * Clamps a value between a maximum and minimum minimum range.
      * @param $value double|float|number Value to clamp.
      * @param $max double|float|number Maximum range.
      * @param $min double|float|number Minimum range.
-     * @return mixed double|float|number Returns clamped value (min <= value <= max).
+     * @return double|float|number Returns a clamped value (min <= value <= max).
      */
     public static function clamp($value, $max, $min)
     {
@@ -32,6 +27,7 @@ class Utility
     }
 
     /**
+     * Converts TRUE to 1, and FALSE to 0; This is opposite of int2bool function.
      * @param $value bool Boolean to convert.
      * @return int Returns 1 if the given value is TRUE; otherwise 0.
      */
@@ -41,6 +37,7 @@ class Utility
     }
 
     /**
+     * Converts 1 to TRUE, and 0 to FALSE; This is opposite of bool2int function.
      * @param $value int Integer to convert.
      * @return bool Returns TRUE if the given value is greater than 0; otherwise FALSE.
      */
@@ -50,6 +47,7 @@ class Utility
     }
 
     /**
+     * Attempts to sanitize and filter unwanted user input.
      * @param $value string String to sanitize.
      * @return string Returns sanitized string of the given value.
      */
@@ -59,6 +57,7 @@ class Utility
     }
 
     /**
+     * Determines if the given input is valid community identifier.
      * @param $community_identifier string Value to validate.
      * @return bool Returns TRUE if the given community_identifier is valid; otherwise FALSE.
      */
@@ -68,6 +67,7 @@ class Utility
     }
 
     /**
+     * Determines if the given input is valid name.
      * @param $name string Name of the player.
      * @return bool Returns TRUE if given name is valid; otherwise FALSE.
      */
@@ -77,6 +77,7 @@ class Utility
     }
 
     /**
+     * Determines if the given input is valid Steam identifier.
      * @param $steam_identifier string Value to validate.
      * @return bool Returns TRUE if the given steam_identifier is valid; otherwise FALSE.
      */
@@ -86,6 +87,7 @@ class Utility
     }
 
     /**
+     * Converts community ID to Steam ID format; This is opposite of steamId2communityId function.
      * @param $community_identifier string Community ID to convert into Steam ID.
      * @return string Returns Steam ID representation of the given community_identifier.
      */
@@ -101,6 +103,7 @@ class Utility
     }
 
     /**
+     * Converts Steam ID to community ID format; This is opposite of communityId2steamId function.
      * @param $steam_identifier string Steam ID to convert into community ID.
      * @return string Returns community ID representation of the given Steam ID.
      */

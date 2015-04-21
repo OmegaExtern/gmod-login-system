@@ -7,6 +7,9 @@
 
 require_once('Enum.php');
 
+/**
+ * Interface IRank
+ */
 interface IRank
 {
     const UNKNOWN = 0;
@@ -19,9 +22,13 @@ interface IRank
     const OWNER = 1 << 6;
 }
 
+/**
+ * Class Rank
+ */
 abstract class Rank extends Enum implements IRank
 {
     /**
+     * Attempts to obtain rank priority/value by name.
      * @param string $name Name of rank.
      * @return int|mixed Returns rank priority with the given name.
      */
@@ -35,6 +42,7 @@ abstract class Rank extends Enum implements IRank
     }
 
     /**
+     * Attempts to obtain rank name by priority/value.
      * @param int $priority Rank priority.
      * @return string Returns rank name with the given priority.
      */
