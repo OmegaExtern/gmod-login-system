@@ -261,7 +261,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
-        echo "login successful.<br>";
+        echo "login successful.";
     }
 
     /**
@@ -308,7 +308,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
-        echo "logout successful.<br>";
+        echo "logout successful.";
     }
 
     public function printThis()
@@ -372,7 +372,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
-        echo "registration successful.<br>";
+        echo "registration successful.";
     }
 
     /**

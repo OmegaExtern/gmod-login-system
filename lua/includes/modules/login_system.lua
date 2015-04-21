@@ -5,7 +5,7 @@ local URL, METHOD = "http://localhost:63342/gmod-login-system/main.php", "post"
 login = function(community_identifier)
     local func_name = debug.getinfo(1, "n").name
     print(Format("func_name=%s", func_name))
-    community_identifier = Format("%.0f", community_identifier)
+    community_identifier = Format("%s", community_identifier)
     print(Format("community_identifier=%s", community_identifier))
     HTTP({
         failed = function(reason)
@@ -36,7 +36,7 @@ end
 logout = function(community_identifier)
     local func_name = debug.getinfo(1, "n").name
     print(Format("func_name=%s", func_name))
-    community_identifier = Format("%.0f", community_identifier)
+    community_identifier = Format("%s", community_identifier)
     print(Format("community_identifier=%s", community_identifier))
     HTTP({
         failed = function(reason)
@@ -67,7 +67,7 @@ end
 register = function(community_identifier, name)
     local func_name = debug.getinfo(1, "n").name
     print(Format("func_name=%s", func_name))
-    community_identifier = Format("%.0f", community_identifier)
+    community_identifier = Format("%s", community_identifier)
     print(Format("community_identifier=%s", community_identifier))
     HTTP({
         failed = function(reason)
