@@ -4,6 +4,9 @@
 -- Author: OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
 --]]
 
+if not CLIENT then
+    return
+end
 require("login_system")
 local sys = login_system
 require("switch_statement")
