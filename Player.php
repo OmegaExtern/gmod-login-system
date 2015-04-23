@@ -281,10 +281,10 @@ class Player extends _Player
     public function connect(PDO $db, $in = true)
     {
         if (!self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier does not exist.');
+            exit('error: community_identifier does not exist.');
         }
         if (!self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier does not exist.');
+            exit('error: steam_identifier does not exist.');
         }
         $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
         $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
@@ -294,20 +294,20 @@ class Player extends _Player
             throw new PDOException('Failed to execute SQL query.');
         }
         if ($stmt->rowCount() < 1) {
-            exit('player was not found.');
+            exit('error: player was not found.');
         }
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
         if (BooleanEnum::boolean2bool($player->banned)) {
             $player = $this->updatePlayer($db);
             self::printPlayer($player);
             unset($player);
-            exit('player is banned.');
+            exit('error: player is banned.');
         }
         if (($in && BooleanEnum::boolean2bool($player->online)) || (!$in && !BooleanEnum::boolean2bool($player->online))) {
             $player = $this->updatePlayer($db);
             self::printPlayer($player);
             unset($player);
-            exit('player is already ' . ($in ? 'online' : 'offline') . '.');
+            exit('error: player is already ' . ($in ? 'online' : 'offline') . '.');
         }
         $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
         $stmt->bindValue(1, $in ? IBoolean::YES : IBoolean::NO);
@@ -366,13 +366,13 @@ class Player extends _Player
             throw new Exception('steam_identifier is not valid.');
         }
         if (self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier already exists.');
+            exit('error: community_identifier already exists.');
         }
         if (self::nameExists($db, $this->name)) {
-            exit('name already exists.');
+            exit('error: name already exists.');
         }
         if (self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier already exists.');
+            exit('error: steam_identifier already exists.');
         }
         $stmt = $db->prepare('INSERT INTO players (community_identifier, joined_name, name, old_name, steam_identifier) VALUES (?, ?, ?, ?, ?)');
         $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
@@ -424,13 +424,13 @@ class Player extends _Player
     public function update(PDO $db, $array)
     {
         if (!self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier does not exist.');
+            exit('error: community_identifier does not exist.');
         }
         if (!self::nameExists($db, $this->name)) {
-            exit('name does not exist.');
+            exit('error: name does not exist.');
         }
         if (!self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier does not exist.');
+            exit('error: steam_identifier does not exist.');
         }
         $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
         $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);

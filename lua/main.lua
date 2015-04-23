@@ -63,7 +63,7 @@ hook.Add("OnPlayerChat", this.hook_prefix .. "OnPlayerChat", function(ply, text)
             sys.logout(community_identifier)
         end, true),
         case(this.chat_prefix .. "REGISTER", function()
-            local name = this.tempe[2]
+            local name = (this.tempe[2] and this.tempe[2]) or ""
             print(Format("sys.register(%s, %s):", community_identifier, name))
             sys.register(community_identifier, name)
             print(name)
