@@ -36,30 +36,30 @@ USE `system`;
 
 DROP TABLE IF EXISTS `players`;
 CREATE TABLE IF NOT EXISTS `players` (
-  `banned`                  TINYINT(1) UNSIGNED                                                                                             NOT NULL DEFAULT '0',
-  `banned_date_time`        DATETIME                                                                                                        NOT NULL,
-  `banned_expire_date_time` DATETIME                                                                                                        NOT NULL,
-  `banned_reason`           CHAR(255)                                                                                                       NOT NULL DEFAULT '',
-  `community_identifier`    BIGINT(17) UNSIGNED                                                                                             NOT NULL DEFAULT '76561197960265729',
-  `date_time`               DATETIME                                                                                                        NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `experience`              BIGINT(20) UNSIGNED                                                                                             NOT NULL DEFAULT '0',
-  `identifier`              BIGINT(20) UNSIGNED                                                                                             NOT NULL,
-  `joined_date_time`        DATETIME                                                                                                        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `banned`                  ENUM('NO', 'YES')                                                                                                          NOT NULL DEFAULT 'NO',
+  `banned_date_time`        DATETIME                                                                                                                   NOT NULL,
+  `banned_expire_date_time` DATETIME                                                                                                                   NOT NULL,
+  `banned_reason`           CHAR(255)                                                                                                                  NOT NULL DEFAULT '',
+  `community_identifier`    BIGINT(17) UNSIGNED                                                                                                        NOT NULL DEFAULT '76561197960265729',
+  `date_time`               DATETIME                                                                                                                   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `experience`              BIGINT(20) UNSIGNED                                                                                                        NOT NULL DEFAULT '0',
+  `identifier`              BIGINT(20) UNSIGNED                                                                                                        NOT NULL,
+  `joined_date_time`        DATETIME                                                                                                                   NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `joined_name`             CHAR(24)
                             CHARACTER SET utf8
-                            COLLATE utf8_bin                                                                                                NOT NULL DEFAULT '',
-  `level`                   TINYINT(1) UNSIGNED                                                                                             NOT NULL DEFAULT '1',
+                            COLLATE utf8_bin                                                                                                           NOT NULL DEFAULT '',
+  `level`                   TINYINT(1) UNSIGNED                                                                                                        NOT NULL DEFAULT '1',
   `name`                    CHAR(24)
                             CHARACTER SET utf8
-                            COLLATE utf8_bin                                                                                                NOT NULL DEFAULT '',
+                            COLLATE utf8_bin                                                                                                           NOT NULL DEFAULT '',
   `old_name`                CHAR(24)
                             CHARACTER SET utf8
-                            COLLATE utf8_bin                                                                                                NOT NULL DEFAULT '',
-  `online`                  TINYINT(1) UNSIGNED                                                                                             NOT NULL DEFAULT '1',
-  `points`                  BIGINT(20) UNSIGNED                                                                                             NOT NULL DEFAULT '0',
-  `rank`                    ENUM('MEMBER', 'SUPER_MEMBER', 'MODERATOR', 'SUPER_MODERATOR', 'ADMINISTRATOR', 'SUPER_ADMINISTRATOR', 'OWNER') NOT NULL DEFAULT 'MEMBER',
-  `steam_identifier`        CHAR(19)                                                                                                        NOT NULL DEFAULT 'STEAM_0:0:0',
-  `warning_percentage`      TINYINT(3) UNSIGNED                                                                                             NOT NULL DEFAULT '0'
+                            COLLATE utf8_bin                                                                                                           NOT NULL DEFAULT '',
+  `online`                  ENUM('NO', 'YES')                                                                                                          NOT NULL DEFAULT 'YES',
+  `points`                  BIGINT(20) UNSIGNED                                                                                                        NOT NULL DEFAULT '0',
+  `rank`                    ENUM('UNKNOWN', 'MEMBER', 'SUPER_MEMBER', 'MODERATOR', 'SUPER_MODERATOR', 'ADMINISTRATOR', 'SUPER_ADMINISTRATOR', 'OWNER') NOT NULL DEFAULT 'MEMBER',
+  `steam_identifier`        CHAR(19)                                                                                                                   NOT NULL DEFAULT 'STEAM_0:0:0',
+  `warning_percentage`      TINYINT(3) UNSIGNED                                                                                                        NOT NULL DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;

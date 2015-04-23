@@ -11,6 +11,7 @@ local URL, METHOD = "http://localhost:63342/gmod-login-system/main.php", "post"
 login = function(community_identifier)
     local func_name = debug.getinfo(1, "n").name
     print(Format("func_name=%s", func_name))
+    assert(type(community_identifier) == "string", Format("bad argument %d# to '%s' (string expected, got %s)", 1, func_name, type(community_identifier)))
     community_identifier = Format("%s", community_identifier)
     print(Format("community_identifier=%s", community_identifier))
     HTTP({
@@ -42,6 +43,7 @@ end
 logout = function(community_identifier)
     local func_name = debug.getinfo(1, "n").name
     print(Format("func_name=%s", func_name))
+    assert(type(community_identifier) == "string", Format("bad argument %d# to '%s' (string expected, got %s)", 1, func_name, type(community_identifier)))
     community_identifier = Format("%s", community_identifier)
     print(Format("community_identifier=%s", community_identifier))
     HTTP({
@@ -73,8 +75,10 @@ end
 register = function(community_identifier, name)
     local func_name = debug.getinfo(1, "n").name
     print(Format("func_name=%s", func_name))
+    assert(type(community_identifier) == "string", Format("bad argument %d# to '%s' (string expected, got %s)", 1, func_name, type(community_identifier)))
     community_identifier = Format("%s", community_identifier)
     print(Format("community_identifier=%s", community_identifier))
+    assert(type(name) == "string", Format("bad argument %d# to '%s' (string expected, got %s)", 2, func_name, type(name)))
     HTTP({
         failed = function(reason)
             error(Format("%s(%s): %s", func_name, community_identifier, reason))

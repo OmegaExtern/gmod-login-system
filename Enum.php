@@ -1,9 +1,12 @@
 <?php
-
 /**
  * Enum.php
  * @license The MIT License (MIT) < http://opensource.org/licenses/MIT >
  * @author OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
+ */
+
+/**
+ * Class Enum
  */
 abstract class Enum
 {
@@ -22,7 +25,7 @@ abstract class Enum
         return self::$constCacheArray[$calledClass];
     }
 
-    public static function isValidName($name, $strict = true)
+    protected static function isValidName($name, $strict = true)
     {
         $constants = self::getConstants();
         if ($strict) {
@@ -32,7 +35,7 @@ abstract class Enum
         return in_array(strtolower($name), $keys);
     }
 
-    public static function isValidValue($value)
+    protected static function isValidValue($value)
     {
         $values = array_values(self::getConstants());
         return in_array($value, $values, $strict = true);

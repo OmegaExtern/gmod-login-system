@@ -15,6 +15,18 @@ local this =
     chat_prefix = "!",
     hook_prefix = "login_system_"
 }
+--[[
+GM:OnPlayerChat(Player, string, boolean, boolean)
+AVAILABILITY: Client
+DESCRIPTION: Called whenever another player send a chat message.
+ARGUMENTS:
+	(1) Player, ply: The player
+	(2) string, text: The players chatted text
+	(3) boolean, teamChat: Is the player typing in team chat?
+	(4) boolean, isDead: Is the player dead?
+RETURNS:
+	(1) boolean: Should the message be suppressed?
+--]]
 hook.Remove("OnPlayerChat", this.hook_prefix .. "OnPlayerChat")
 hook.Add("OnPlayerChat", this.hook_prefix .. "OnPlayerChat", function(ply, text)
     if not ply:IsValid() then

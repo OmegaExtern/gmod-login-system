@@ -35,7 +35,7 @@ switch (strtoupper($_POST['do'])) {
             $player = new Player();
             $player->community_identifier = $community_identifier;
             $player->steam_identifier = $steam_identifier;
-            $player->login($db);
+            $player->connect($db);
             unset($player);
             unset($db);
         } catch (PDOException $e) {
@@ -49,7 +49,7 @@ switch (strtoupper($_POST['do'])) {
             $player = new Player();
             $player->community_identifier = $community_identifier;
             $player->steam_identifier = $steam_identifier;
-            $player->logout($db);
+            $player->connect($db, false);
             unset($player);
             unset($db);
         } catch (PDOException $e) {

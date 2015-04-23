@@ -6,6 +6,8 @@
  */
 
 require_once('Constants.php');
+require_once('BooleanEnum.php');
+require_once('Rank.php');
 require_once('Utility.php');
 
 /**
@@ -14,7 +16,7 @@ require_once('Utility.php');
 class _Player
 {
     /**
-     * @var int Determines if the player is currently banned.
+     * @var string Determines if the player is currently banned.
      */
     public $banned;
     /**
@@ -66,7 +68,7 @@ class _Player
      */
     public $old_name;
     /**
-     * @var int Determines if the player is currently online.
+     * @var string Determines if the player is currently online.
      */
     public $online;
     /**
@@ -250,7 +252,7 @@ class Player extends _Player
     public static function printPlayer($player)
     {
         echo 'return {
-    ["banned"] = ' . $player->banned . ',
+    ["banned"] = ' . BooleanEnum::boolean2string($player->banned) . ',
     ["banned_date_time"] = "' . $player->banned_date_time . '",
     ["banned_expire_date_time"] = "' . $player->banned_expire_date_time . '",
     ["banned_reason"] = "' . $player->banned_reason . '",
@@ -263,19 +265,20 @@ class Player extends _Player
     ["level"] = ' . $player->level . ',
     ["name"] = "' . $player->name . '",
     ["old_name"] = "' . $player->old_name . '",
-    ["online"] = ' . $player->online . ',
+    ["online"] = ' . BooleanEnum::boolean2string($player->online) . ',
     ["points"] = ' . $player->points . ',
-    ["rank"] = "' . $player->rank . '",
+    ["rank"] = "' . Rank::getRankNameByPriority(Rank::getRankPriorityByName($player->rank)) . '",
     ["steam_identifier"] = "' . $player->steam_identifier . '",
     ["warning_percentage"] = ' . $player->warning_percentage . '
 }<br>';
     }
 
     /**
-     * Attempts to login.
+     * Attempts to login/logout.
      * @param $db PDO Valid PDO of the database connection.
+     * @param bool $in TRUE = login; FALSE = logout.
      */
-    public function login(PDO $db)
+    public function connect(PDO $db, $in = true)
     {
         if (!self::communityIdExists($db, $this->community_identifier)) {
             exit('community_identifier does not exist.');
@@ -294,20 +297,20 @@ class Player extends _Player
             exit('player was not found.');
         }
         $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
-        if (Utility::int2bool($player->banned)) {
+        if (BooleanEnum::boolean2bool($player->banned)) {
             $player = $this->updatePlayer($db);
             self::printPlayer($player);
             unset($player);
             exit('player is banned.');
         }
-        if (Utility::int2bool($player->online)) {
+        if (($in && BooleanEnum::boolean2bool($player->online)) || (!$in && !BooleanEnum::boolean2bool($player->online))) {
             $player = $this->updatePlayer($db);
             self::printPlayer($player);
             unset($player);
-            exit('player is already online.');
+            exit('player is already ' . ($in ? 'online' : 'offline') . '.');
         }
         $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
-        $stmt->bindValue(1, true);
+        $stmt->bindValue(1, $in ? IBoolean::YES : IBoolean::NO);
         $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR, MAX_IDENTIFIER_LENGTH);
         $success = $stmt->execute();
         if (!$success) {
@@ -316,55 +319,7 @@ class Player extends _Player
         $player = $this->updatePlayer($db);
         self::printPlayer($player);
         unset($player);
-        echo 'login successful.';
-    }
-
-    /**
-     * Attempts to logout.
-     * @param $db PDO Valid PDO of the database connection.
-     */
-    public function logout(PDO $db)
-    {
-        if (!self::communityIdExists($db, $this->community_identifier)) {
-            exit('community_identifier does not exist.');
-        }
-        if (!self::steamIdExists($db, $this->steam_identifier)) {
-            exit('steam_identifier does not exist.');
-        }
-        $stmt = $db->prepare('SELECT * FROM players WHERE community_identifier=? AND steam_identifier=? LIMIT 1');
-        $stmt->bindParam(1, $this->community_identifier, PDO::PARAM_STR, MAX_COMMUNITY_ID_LENGTH);
-        $stmt->bindParam(2, $this->steam_identifier, PDO::PARAM_STR, MAX_STEAM_ID_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        if ($stmt->rowCount() < 1) {
-            exit('invalid credentials.');
-        }
-        $player = $stmt->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, '_Player')[0];
-        if (Utility::int2bool($player->banned)) {
-            $player = $this->updatePlayer($db);
-            self::printPlayer($player);
-            unset($player);
-            exit('player is banned.');
-        }
-        if (!Utility::int2bool($player->online)) {
-            $player = $this->updatePlayer($db);
-            self::printPlayer($player);
-            unset($player);
-            exit('player is already offline.');
-        }
-        $stmt = $db->prepare('UPDATE players SET online=? WHERE identifier=?');
-        $stmt->bindValue(1, false);
-        $stmt->bindParam(2, $player->identifier, PDO::PARAM_STR, MAX_IDENTIFIER_LENGTH);
-        $success = $stmt->execute();
-        if (!$success) {
-            throw new PDOException('Failed to execute SQL query.');
-        }
-        $player = $this->updatePlayer($db);
-        self::printPlayer($player);
-        unset($player);
-        echo 'logout successful.';
+        echo ($in ? 'login' : 'logout') . ' successful.';
     }
 
     /**
@@ -373,7 +328,7 @@ class Player extends _Player
     public function printThis()
     {
         echo 'return {
-    ["banned"] = ' . $this->banned . ',
+    ["banned"] = ' . BooleanEnum::boolean2string($this->banned) . ',
     ["banned_date_time"] = "' . $this->banned_date_time . '",
     ["banned_expire_date_time"] = "' . $this->banned_expire_date_time . '",
     ["banned_reason"] = "' . $this->banned_reason . '",
@@ -386,9 +341,9 @@ class Player extends _Player
     ["level"] = ' . $this->level . ',
     ["name"] = "' . $this->name . '",
     ["old_name"] = "' . $this->old_name . '",
-    ["online"] = ' . $this->online . ',
+    ["online"] = ' . BooleanEnum::boolean2string($this->online) . ',
     ["points"] = ' . $this->points . ',
-    ["rank"] = "' . $this->rank . '",
+    ["rank"] = "' . Rank::getRankNameByPriority(Rank::getRankPriorityByName($this->rank)) . '",
     ["steam_identifier"] = "' . $this->steam_identifier . '",
     ["warning_percentage"] = ' . $this->warning_percentage . '
 }<br>';

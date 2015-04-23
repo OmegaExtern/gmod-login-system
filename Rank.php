@@ -25,7 +25,7 @@ interface IRank
 /**
  * Class Rank
  */
-abstract class Rank extends Enum implements IRank
+class Rank extends Enum implements IRank
 {
     /**
      * Attempts to obtain rank priority/value by name.
@@ -38,7 +38,7 @@ abstract class Rank extends Enum implements IRank
         if ($rank === null) {
             return IRank::UNKNOWN;
         }
-        return $rank;
+        return intval($rank);
     }
 
     /**
