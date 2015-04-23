@@ -41,6 +41,13 @@ login = function(community_identifier)
         {
             ["do"] = func_name:upper(),
             ["community_identifier"] = community_identifier
+        },
+        headers =
+        {
+            ["cookies"] =
+            {
+                ["XDEBUG_SESSION"] = "PHPSTORM"
+            }
         }
     })
 end
@@ -77,6 +84,13 @@ logout = function(community_identifier)
         {
             ["do"] = func_name:upper(),
             ["community_identifier"] = community_identifier
+        },
+        headers =
+        {
+            ["cookies"] =
+            {
+                ["XDEBUG_SESSION"] = "PHPSTORM"
+            }
         }
     })
 end
@@ -115,6 +129,13 @@ register = function(community_identifier, name)
             ["do"] = func_name:upper(),
             ["community_identifier"] = community_identifier,
             ["name"] = name
+        },
+        headers =
+        {
+            ["cookies"] =
+            {
+                ["XDEBUG_SESSION"] = "PHPSTORM"
+            }
         }
     })
 end
