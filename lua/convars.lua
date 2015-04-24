@@ -69,13 +69,13 @@ RETURNS:
 hook.Add("OnPlayerChat", login_sys.hook_prefix .. "OnPlayerChat", function(ply, text) -- teamChat, isDead
 if not ply:IsValid() then
     -- Exit if player is not valid (it is a console or unconnected player).
-        return
-    end
+    return
+end
 login_sys.temp = text:Trim():gsub("%s+", " ") -- Trim submitted text and replace all spaces with a single space.
 if login_sys.temp:Left(1) ~= login_sys.chat_prefix then
     -- Exit when first character does not match chat prefix.
-        return
-    end
+    return
+end
 login_sys.tempe = string.Explode(" ", login_sys.temp) -- Explode by space.
 if login_sys.tempe[1] == login_sys.chat_prefix then
     -- In case if the first exploded element matches the chat prefix.

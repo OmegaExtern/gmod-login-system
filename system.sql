@@ -7,7 +7,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Apr 21, 2015 at 06:36 PM
+-- Generation Time: Apr 24, 2015 at 10:27 PM
 -- Server version: 5.6.21
 -- PHP Version: 5.6.8
 
@@ -63,6 +63,22 @@ CREATE TABLE IF NOT EXISTS `players` (
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
+
+--
+-- Triggers `players`
+--
+DROP TRIGGER IF EXISTS `AutoBanOnCentWarning`;
+DELIMITER $$
+CREATE TRIGGER `AutoBanOnCentWarning` BEFORE UPDATE ON `players`
+FOR EACH ROW BEGIN
+  IF NEW.warning_percentage > 99
+  THEN
+    SET NEW.banned = 'YES';
+    SET NEW.banned_reason = 'Exceeded warning percentage.';
+  END IF;
+END
+$$
+DELIMITER ;
 
 --
 -- Indexes for dumped tables
