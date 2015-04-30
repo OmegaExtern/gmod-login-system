@@ -28,7 +28,6 @@ CreateTwoStateClientConVar = function(name, default, shouldsave, userdata, funcO
     end
     assert(type(default) == "number", Format("bad argument %d# to '%s' (number expected, got %s)", 2, func_name, type(default)))
     default = math.Clamp(math.floor(default), 0, 1)
-    --print(Format("default=%d", default))
     assert(type(shouldsave) == "boolean", Format("bad argument %d# to '%s' (boolean expected, got %s)", 3, func_name, type(shouldsave)))
     shouldsave = tobool(shouldsave)
     assert(type(userdata) == "boolean", Format("bad argument %d# to '%s' (boolean expected, got %s)", 4, func_name, type(userdata)))
@@ -44,17 +43,17 @@ CreateTwoStateClientConVar = function(name, default, shouldsave, userdata, funcO
         value_old = math.floor(tonumber(value_old))
         value_new = math.floor(tonumber(value_new) or default)
         if (value_old < 0 and value_new < 0) or (value_old < 0 and value_new == 0) or (value_old == 0 and value_new < 0) or (value_old == 0 and value_new == 0) then
-            print("already off")
+            --print("already off")
             RunConsoleCommand(convar_name, "0")
             return
         end
         if (value_old > 1 and value_new > 1) or (value_old > 1 and value_new == 1) or (value_old == 1 and value_new > 1) or (value_old == 1 and value_new == 1) then
-            print("already on")
+            --print("already on")
             RunConsoleCommand(convar_name, "1")
             return
         end
         if (value_old < 0 and value_new > 1) or (value_old < 0 and value_new == 1) or (value_old == 0 and value_new > 1) or (value_old == 0 and value_new == 1) then
-            print("turn it on")
+            --print("turn it on")
             if funcOn and type(funcOn) == "function" then
                 funcOn(convar_name, value_old, value_new)
             end
@@ -65,7 +64,7 @@ CreateTwoStateClientConVar = function(name, default, shouldsave, userdata, funcO
             return
         end
         if (value_old > 1 and value_new < 0) or (value_old == 1 and value_new < 0) or (value_old > 1 and value_new == 0) or (value_old == 1 and value_new == 0) then
-            print("turn it off")
+            --print("turn it off")
             if funcOff and type(funcOff) == "function" then
                 funcOff(convar_name, value_old, value_new)
             end
@@ -75,7 +74,7 @@ CreateTwoStateClientConVar = function(name, default, shouldsave, userdata, funcO
             RunConsoleCommand(convar_name, "0")
             return
         end
-        print(value_old, value_new)
+        --print(value_old, value_new)
         RunConsoleCommand(convar_name, tostring(math.Clamp(value_new, 0, 1)))
     end, cvar:GetName()) -- ConVarName, FunctionCallback, Identifier
     -- Persist the current state, else set default state. And execute appropriate function depending on the state.
