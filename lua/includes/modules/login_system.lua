@@ -23,17 +23,17 @@ login = function(community_identifier)
             print(Format("body=%s", body))
             if body:lower():StartWith("error") then
                 print(body)
-            else
-                local bodye = string.Explode("<br>", body)
-                print("PrintTable(bodye):")
-                PrintTable(bodye)
-                local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
-                if not succ then
-                    error(Format("%s(%s): %s", func_name, community_identifier, ret))
-                end
-                print("PrintTable(ret):")
-                PrintTable(ret)
+                return
             end
+            local bodye = string.Explode("<br>", body)
+            print("PrintTable(bodye):")
+            PrintTable(bodye)
+            local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
+            if not succ then
+                error(Format("%s(%s): %s", func_name, community_identifier, ret))
+            end
+            print("PrintTable(ret):")
+            PrintTable(ret)
         end,
         method = METHOD,
         url = URL,
@@ -66,17 +66,17 @@ logout = function(community_identifier)
             print(Format("body=%s", body))
             if body:lower():StartWith("error") then
                 print(body)
-            else
-                local bodye = string.Explode("<br>", body)
-                print("PrintTable(bodye):")
-                PrintTable(bodye)
-                local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
-                if not succ then
-                    error(Format("%s(%s): %s", func_name, community_identifier, ret))
-                end
-                print("PrintTable(ret):")
-                PrintTable(ret)
+                return
             end
+            local bodye = string.Explode("<br>", body)
+            print("PrintTable(bodye):")
+            PrintTable(bodye)
+            local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
+            if not succ then
+                error(Format("%s(%s): %s", func_name, community_identifier, ret))
+            end
+            print("PrintTable(ret):")
+            PrintTable(ret)
         end,
         method = METHOD,
         url = URL,
@@ -110,17 +110,17 @@ register = function(community_identifier, name)
             print(Format("body=%s", body))
             if body:lower():StartWith("error") then
                 print(body)
-            else
-                local bodye = string.Explode("<br>", body)
-                print("PrintTable(bodye):")
-                PrintTable(bodye)
-                local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
-                if not succ then
-                    error(Format("%s(%s, %s): %s", func_name, community_identifier, name, ret))
-                end
-                print("PrintTable(ret):")
-                PrintTable(ret)
+                return
             end
+            local bodye = string.Explode("<br>", body)
+            print("PrintTable(bodye):")
+            PrintTable(bodye)
+            local succ, ret = pcall(CompileString(bodye[1], debug.getinfo(1, "S").source:sub(2)))
+            if not succ then
+                error(Format("%s(%s, %s): %s", func_name, community_identifier, name, ret))
+            end
+            print("PrintTable(ret):")
+            PrintTable(ret)
         end,
         method = METHOD,
         url = URL,
