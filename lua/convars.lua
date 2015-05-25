@@ -7,56 +7,61 @@
 if not CLIENT then
     return
 end
-require("login_system") -- require includes/modules/login_system.lua
---require("switch_statement") -- require includes/modules/switch_statement.lua
--- 'loginsys' is table for this addon, it will hold all variables.
+require("login_system") -- require includes/modules/login_system module.
+--require("switch_statement") -- require includes/modules/switch_statement module.
+-- 'loginsys' is the 'brain' of this addon.
 loginsys =
 {
-    chat_prefix = "!",
+    chat_prefix = '!',
     convar_prefix = "loginsys_",
     hook_prefix = "login_system_",
-    f = {
+    f =
+    {
         login = function(...)
-            local funcname = debug.getinfo(1.0, "n").name -- login
+            local funcname = debug.getinfo(1, 'n').name -- login
             local args = { ... }
             assert(#args == 1, Format("%s called with %i parameters, 1 expected", funcname, #args))
-            assert(type(args[1]) == "string" and istring(args[1]), Format("bad argument #%i to '%s' (string expected, got %s)", 1, funcname, type(args[1])))
+            assert(isstring(args[1]), Format("bad argument #%i to '%s' (string expected, got %s)", 1, funcname, type(args[1])))
             print(Format("login_system[%s](%s):", funcname, args[1]))
             login_system[funcname](args[1])
         end,
         logout = function(...)
-            local funcname = debug.getinfo(1.0, "n").name -- logout
+            local funcname = debug.getinfo(1, 'n').name -- logout
             local args = { ... }
             assert(#args == 1, Format("%s called with %i parameters, 1 expected", funcname, #args))
-            assert(type(args[1]) == "string" and istring(args[1]), Format("bad argument #%i to '%s' (string expected, got %s)", 1, funcname, type(args[1])))
+            assert(isstring(args[1]), Format("bad argument #%i to '%s' (string expected, got %s)", 1, funcname, type(args[1])))
             print(Format("login_system[%s](%s):", funcname, args[1]))
             login_system[funcname](args[1])
         end,
         register = function(...)
-            local funcname = debug.getinfo(1.0, "n").name -- register
+            local funcname = debug.getinfo(1, 'n').name -- register
             local args = { ... }
             assert(#args == 2, Format("%s called with %i parameters, 2 expected", funcname, #args))
-            assert(type(args[1]) == "string" and istring(args[1]), Format("bad argument #%i to '%s' (string expected, got %s)", 1, funcname, type(args[1])))
-            assert(type(args[2]) == "string" and istring(args[2]), Format("bad argument #%i to '%s' (string expected, got %s)", 2, funcname, type(args[2])))
-            print(Format("login_system.register(%s, %s):", args[1], args[2]))
+            assert(isstring(args[1]), Format("bad argument #%i to '%s' (string expected, got %s)", 1, funcname, type(args[1])))
+            assert(isstring(args[2]), Format("bad argument #%i to '%s' (string expected, got %s)", 2, funcname, type(args[2])))
+            print(Format("login_system[%s](%s, %s):", funcname, args[1], args[2]))
             login_system[funcname](args[1], args[2])
-            print(args[2])
         end
+    },
+    vgui =
+    {
+        height = 480.0,
+        width = 640.0
     }
 }
-require("cvarsx") -- require cvarsx module.
-loginsys.vgui =
-{
-    height = 480.0,
-    width = 640.0
-}
+require("cvarsx") -- require includes/modules/cvarsx module.
+cvarsx.SetConVarPrefix(loginsys.convar_prefix)
 loginsys.convars = {}
-loginsys.convars.vgui = cvarsx.CreateTwoStateClientConVar(loginsys.convar_prefix .. "vgui", 0.0, false, false, nil, function(convar_name) -- value_old, value_new
+loginsys.convars.vgui = cvarsx.CreateTwoStateClientConVar("vgui", 0, false, false, function()
+    if IsValid(loginsys.vgui.dframe) then
+        loginsys.vgui.dframe:Close()
+    end
+end, function(convar_name)
     if not IsValid(GetHUDPanel()) then
         return
     end
-    loginsys.vgui.width_multiplier = math.Round(ScrW() / loginsys.vgui.width)
     loginsys.vgui.height_multiplier = math.Round(ScrH() / loginsys.vgui.height)
+    loginsys.vgui.width_multiplier = math.Round(ScrW() / loginsys.vgui.width)
     loginsys.vgui.dframe = vgui.Create("DFrame", GetHUDPanel())
     loginsys.vgui.dframe.btnMaxim:SetVisible(false) -- Hide maximize button.
     loginsys.vgui.dframe.btnMinim:SetVisible(false) -- Hide minimize button.
@@ -69,15 +74,15 @@ loginsys.convars.vgui = cvarsx.CreateTwoStateClientConVar(loginsys.convar_prefix
     loginsys.vgui.dframe:Center()
     loginsys.vgui.dframe:MakePopup()
     loginsys.vgui.dframe.OnClose = function()
-        RunConsoleCommand(convar_name, "0") -- Reset vgui convar.
+        RunConsoleCommand(convar_name, '0') -- Reset ConVar.
     end
 end, true, true, false)
-loginsys.convars.enabled = cvarsx.CreateTwoStateClientConVar(loginsys.convar_prefix .. "enabled", 1.0, false, false, function() -- convar_name, value_old, value_new
+loginsys.convars.enabled = cvarsx.CreateTwoStateClientConVar("enabled", 0, false, false, function()
     hook.Remove("OnPlayerChat", loginsys.hook_prefix .. "OnPlayerChat")
     hook.Remove("HUDPaint", loginsys.hook_prefix .. "OnScreenResolutionChange")
     hook.Remove("OnScreenResolutionChanged", loginsys.hook_prefix .. "OnScreenResolutionChanged")
     DebugInfo(1, "Login System: Disabled.")
-end, function() -- convar_name, value_old, value_new
+end, function()
     --[[
     GM:OnPlayerChat(Player, string, boolean, boolean)
     AVAILABILITY: Client
@@ -90,17 +95,17 @@ end, function() -- convar_name, value_old, value_new
     RETURNS:
         (1) boolean: Should the message be suppressed?
     --]]
-    hook.Add("OnPlayerChat", loginsys.hook_prefix .. "OnPlayerChat", function(ply, text) -- teamChat, isDead
+    hook.Add("OnPlayerChat", loginsys.hook_prefix .. "OnPlayerChat", function(ply, text)
         if not ply:IsValid() then
             -- Exit if player is not valid (it is a console or unconnected player).
             return
         end
-        loginsys.temp = text:Trim():gsub("%s+", " ") -- Trim submitted text and replace all spaces with a single space.
+        loginsys.temp = text:Trim():gsub("%s+", ' ') -- Trim submitted text and replace all spaces with a single space.
         if loginsys.temp:Left(1) ~= loginsys.chat_prefix then
             -- Exit when first character does not match chat prefix.
             return
         end
-        loginsys.tempe = string.Explode(" ", loginsys.temp) -- Explode by space.
+        loginsys.tempe = string.Explode(' ', loginsys.temp) -- Explode by space.
         if loginsys.tempe[1] == loginsys.chat_prefix then
             -- In case if the first exploded element matches the chat prefix.
             if #loginsys.tempe < 2 or loginsys.tempe[2]:len() < 5 then
@@ -119,9 +124,9 @@ end, function() -- convar_name, value_old, value_new
             loginsys.tempe[1] = loginsys.tempe[1]:upper()
         end
         local community_identifier = tostring(ply:SteamID64())
-        print(Format("community_identifier=%s", community_identifier))
-        print("PrintTable(loginsys):")
-        PrintTable(loginsys)
+        --print(Format("community_identifier=%s", community_identifier))
+        --print("PrintTable(loginsys):")
+        --PrintTable(loginsys)
         local func = loginsys.f[loginsys.tempe[1]]
         if isfunction(func) then
             func(community_identifier, loginsys.tempe)
@@ -153,12 +158,12 @@ end, function() -- convar_name, value_old, value_new
         end
     end)
     hook.Add("OnScreenResolutionChanged", loginsys.hook_prefix .. "OnScreenResolutionChanged", function()
-        if not loginsys.convars.vgui or not loginsys.convars.vgui:GetBool() or not loginsys.vgui.dframe then
+        if not loginsys.convars.vgui or not loginsys.convars.vgui:GetBool() or not IsValid(loginsys.vgui.dframe) then
             return
         end
         loginsys.vgui.dframe:Close()
-        RunConsoleCommand(loginsys.convars.vgui:GetName(), "1")
+        RunConsoleCommand(loginsys.convars.vgui:GetName(), '1')
     end)
     DebugInfo(1, "Login System: Enabled.")
-end, true, true, true)
+end, true, true, false)
 collectgarbage()
