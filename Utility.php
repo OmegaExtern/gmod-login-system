@@ -63,7 +63,7 @@ class Utility
      */
     public static function isValidCommunityId($community_identifier)
     {
-        return preg_match('/' . COMMUNITY_ID_REGEX . '/A', strval($community_identifier)) === 1;
+        return preg_match('/' . COMMUNITY_ID_REGEX . '/A', strval($community_identifier)) === 1 && intval(bcsub($community_identifier, '76561197960265729')) >= 0;
     }
 
     /**
