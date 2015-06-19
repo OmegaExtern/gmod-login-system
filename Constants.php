@@ -6,7 +6,7 @@
  */
 
 const COMMUNITY_ID_REGEX = '^(7656119[0-9]{10})$';
-const DATABASE_DNS = 'mysql:host=127.0.0.1;port=3306;dbname=system;charset=utf8;';
+const DATABASE_DNS = 'mysql:host=127.0.0.1;port=3306;dbname=gmod_login_system;charset=utf8;';
 const DATABASE_OPTIONS = [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION, PDO::ATTR_EMULATE_PREPARES => false, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'];
 const DATABASE_PASSWD = '';
 const DATABASE_USERNAME = 'root';
