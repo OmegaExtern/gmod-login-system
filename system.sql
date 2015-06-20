@@ -1,15 +1,6 @@
 -- system.sql
 -- License: The MIT License (MIT) < http://opensource.org/licenses/MIT >
 -- Author: OmegaExtern < https://github.com/OmegaExtern > < omegaextern@live.com >
---
--- phpMyAdmin SQL Dump
--- version 4.4.3
--- http://www.phpmyadmin.net
---
--- Host: localhost
--- Generation Time: Apr 24, 2015 at 10:27 PM
--- Server version: 5.6.21
--- PHP Version: 5.6.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -21,12 +12,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `system`
+-- Database: `gmod_login_system`
 --
-CREATE DATABASE IF NOT EXISTS `system`
+CREATE DATABASE IF NOT EXISTS `gmod_login_system`
   DEFAULT CHARACTER SET utf8
-  COLLATE utf8_general_ci;
-USE `system`;
+  COLLATE utf8_bin;
+USE `gmod_login_system`;
 
 -- --------------------------------------------------------
 
@@ -40,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   `banned_date_time`        DATETIME                                                                                                                   NOT NULL,
   `banned_expire_date_time` DATETIME                                                                                                                   NOT NULL,
   `banned_reason`           CHAR(255)                                                                                                                  NOT NULL DEFAULT '',
-  `community_identifier`    BIGINT(17) UNSIGNED                                                                                                        NOT NULL DEFAULT '76561197960265729',
+  `community_identifier`    BIGINT(17) UNSIGNED                                                                                                        NOT NULL DEFAULT '76561197960265728',
   `date_time`               DATETIME                                                                                                                   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `experience`              BIGINT(20) UNSIGNED                                                                                                        NOT NULL DEFAULT '0',
   `identifier`              BIGINT(20) UNSIGNED                                                                                                        NOT NULL,
@@ -71,7 +62,7 @@ DROP TRIGGER IF EXISTS `AutoBanOnCentWarning`;
 DELIMITER $$
 CREATE TRIGGER `AutoBanOnCentWarning` BEFORE UPDATE ON `players`
 FOR EACH ROW BEGIN
-  IF NEW.warning_percentage > 99
+  IF NEW.warning_percentage >= 100
   THEN
     SET NEW.banned = 'YES';
     SET NEW.banned_reason = 'Exceeded warning percentage.';
