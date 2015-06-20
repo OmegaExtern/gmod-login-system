@@ -10,7 +10,7 @@ However, you could also clone master repository on your desktop using [Git](http
 These instructions may get out-of-date as time advances, I will try to keep them up-to-date for as long as I work on this project.
 Other information that could help sometime:
 I'm running Windows 10 (64-bit), most recent XAMPP build as of 19th of June 2015, that is 5.6.8 which was released on 21st of April 2015. If you have newer XAMPP/PHP/phpMyAdmin/PhpStorm installed, this should still work fine.
-I use [Notepad++](https://notepad-plus-plus.org/download/) text editor for editting INI files. [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html) (43.0) as web-browser. PhpStorm 8.0.3 which is built on 12th February 2015. Xdebug version is 2.3.3.
+I use [Notepad++](https://notepad-plus-plus.org/download/) text editor for editing INI files. [Google Chrome](https://www.google.com/chrome/browser/desktop/index.html) (43.0) as web-browser. PhpStorm 8.0.3 which is built on 12th February 2015. Xdebug version is 2.3.3.
 
 ## Requirements
 * [Repository](https://github.com/OmegaExtern/gmod-login-system/archive/master.zip)
@@ -31,10 +31,10 @@ Assuming you have installed XAMPP on your computer; let the fun begin.
 8. Wait for the second download to complete. Extract contents from an archive file downloaded from the second step, into `C:\xampp\phpMyAdmin\` directory.
 9. Note, about phpMyAdmin archive, they put files into a folder inside an archive, what you should do is extract files from that folder (do overwrite existing files when asked).
 10. Navigate to `C:\xampp\php\` directory.
-11. Rename `php.ini-development` file to `php.ini`. Show file extensions by unchecking "Hide extensions for known file types" in File Explorer Options dialog (this setting can be changed much easier way in W10; just Google/YouTube if you get stuck on this step).
-12. Open `php.ini` file using a text editor (preferably, with INI file format support for easier editting).
+11. Rename `php.ini-development` file to `php.ini`. Show file extensions by un-checking "Hide extensions for known file types" in File Explorer Options dialog (this setting can be changed much easier way in W10; just Google/YouTube if you get stuck on this step).
+12. Open `php.ini` file using a text editor (preferably, with INI file format support for easier editing).
 13. Search for `extension_dir` (near line 736), you want to assign this key to point to ext folder which is by default located at `C:\xampp\php\` directory. Line should look like this: `extension_dir = "C:\xampp\php\ext"`.
-14. Search for `; Windows Extensions` (near line 872), below comments is a list of extensions, you have to uncomment them, to do that, keep removing `;` character infront of each line which starts with `;extension` until a first blank line.
+14. Search for `; Windows Extensions` (near line 872), below comments is a list of extensions, you have to uncomment them, to do that, keep removing `;` character in-front of each line which starts with `;extension` until a first blank line.
 15. Do not quit XAMPP or text editor where you have opened `php.ini`, yet. **Continue reading/doing in the order as written**.
 
 ### Debugging the system (part 1)
@@ -87,7 +87,7 @@ Default credentials to access phpMyAdmin (for XAMPP) are, username: `root`, leav
   input_go.click();
 })();
 ```
-Once you login, you may notice `You are connected as 'root' with no password...` error which appears at the very bottom of the page; you can ignore this message (hide it using AdBlock or by writting JS that will inject into page with Tampermonkey), in fact you should (otherwise if you wish to have a password, you will need to update constant variable `DATABASE_PASSWD` [here](https://github.com/OmegaExtern/gmod-login-system/blob/master/Constants.php#L11)).
+Once you login, you may notice `You are connected as 'root' with no password...` error which appears at the very bottom of the page; you can ignore this message (hide it using AdBlock or by writing JS that will inject into page with Tampermonkey), in fact you should (otherwise if you wish to have a password, you will need to update constant variable `DATABASE_PASSWD` [here](https://github.com/OmegaExtern/gmod-login-system/blob/master/Constants.php#L11)).
 
 ### Importing a database
 1. Click on `phpMyAdmin` logo on the upper-left, click on `SQL` tab.
@@ -130,7 +130,7 @@ Password is not set (by default), leave it blank/empty.
 2. Repeat the first step every time when you make changes in master repository directory and reconnect to the game/server or recreate it.
 3. Run Garry's Mod, create a new (LAN) game/server with your favorite map.
 4. Once you are in-game, you should see notification in the upper-right corner. Press key **INS** or **Insert** to bring up login system VGUI.
-5. If you check out Developer Console, you will see callback information after the player sends a recognizable chat-command/messsage.
+5. If you check out Developer Console, you will see callback information after the player sends a recognizable chat-command/message.
 
 ### Available chat commands
 Chat commands are case-insensitive (e.g. !LogIN and !login will trigger the same event). But, arguments **are case-sensitive**.
