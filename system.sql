@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS `players` (
   `points`                  BIGINT(20) UNSIGNED                                                                                                        NOT NULL DEFAULT '0',
   `rank`                    ENUM('UNKNOWN', 'MEMBER', 'SUPER_MEMBER', 'MODERATOR', 'SUPER_MODERATOR', 'ADMINISTRATOR', 'SUPER_ADMINISTRATOR', 'OWNER') NOT NULL DEFAULT 'MEMBER',
   `steam_identifier`        CHAR(19)                                                                                                                   NOT NULL DEFAULT 'STEAM_0:0:0',
-  `warning_percentage`      TINYINT(3) UNSIGNED                                                                                                        NOT NULL DEFAULT '0'
+  `warning_percentage`      TINYINT(1) UNSIGNED                                                                                                        NOT NULL DEFAULT '0'
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -65,7 +65,10 @@ FOR EACH ROW BEGIN
   IF NEW.warning_percentage >= 100
   THEN
     SET NEW.banned = 'YES';
+    SET NEW.banned_date_time = CURRENT_TIMESTAMP;
+    SET NEW.banned_expire_date_time = DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 100 YEAR);
     SET NEW.banned_reason = 'Exceeded warning percentage.';
+    SET NEW.online = 'NO';
   END IF;
 END
 $$
