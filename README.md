@@ -36,10 +36,11 @@ Assuming you have installed XAMPP on your computer; let the fun begin.
 13. Search for `extension_dir` (near line 736), you want to assign this key to point to ext folder which is by default located at `C:\xampp\php\` directory. Line should look like this: `extension_dir = "C:\xampp\php\ext"`.
 14. Search for `; Windows Extensions` (near line 872), below comments is a list of extensions, you have to uncomment them, to do that, keep removing `;` character infront of each line which starts with `;extension` until a first blank line.
 15. Do not quit XAMPP or text editor where you have opened `php.ini`, yet. **Continue reading/doing in the order as written**.
+
 ### Debugging the system (part 1)
-Doing this here to save time later..
-1. In text editor where you have opened `php.ini` file, scroll to the end, append a new line, and then append this (copy/paste):
-```ini
+Doing this here to save time later.<br>
+- In text editor where you have opened `php.ini` file, scroll to the end, append a new line, and then append this (copy/paste):
+```
 [XDebug]
 zend_extension="C:\xampp\php\ext\php_xdebug.dll"
 xdebug.remote_enable=1
@@ -47,17 +48,17 @@ xdebug.remote_host=127.0.0.1
 xdebug.remote_port=9000
 xdebug.idekey=PHPSTORM
 ```
-2. Save changes to `php.ini` file.
-3. [Download XDebug for PHP 5.6 VC11 TS (32 bit)](http://xdebug.org/download.php). Wait for download to complete.
-4. Move downloaded DLL file (3rd step) to `C:\xampp\php\ext\` directory.
-5. Rename DLL file to `php_xdebug` (do not erase extension, it should remain DLL).
-6. If you install modules as services you won't need to start XAMPP control panel every time. Stop `Apache` and `MySQL` modules if they are running. Click on red 'X' icon before module names, it should ask you to confirm an action, click `Yes` button, do this for `Apache` and `MySQL` modules.
-7. Now click on `Start` action button for `Apache` and `MySQL` modules.
-8. Proceed next once the modules are up and running, that is when the background color of the module names turns green, and port numbers gets displayed. Apache ports: 80, 443. MySQL port: 3306. 
+- Save changes to `php.ini` file.
+- [Download XDebug for PHP 5.6 VC11 TS (32 bit)](http://xdebug.org/download.php). Wait for download to complete.
+- Move downloaded DLL file (3rd step) to `C:\xampp\php\ext\` directory.
+- Rename DLL file to `php_xdebug` (do not erase extension, it should remain DLL).
+- If you install modules as services you won't need to start XAMPP control panel every time. Stop `Apache` and `MySQL` modules if they are running. Click on red 'X' icon before module names, it should ask you to confirm an action, click `Yes` button, do this for `Apache` and `MySQL` modules.
+- Now click on `Start` action button for `Apache` and `MySQL` modules.
+- Proceed next once the modules are up and running, that is when the background color of the module names turns green, and port numbers gets displayed. Apache ports: 80, 443. MySQL port: 3306. 
 
 ## Configuring MySQL
-[Navigate to phpMyAdmin](http://127.0.0.1/phpmyadmin/) page, wait for it to load, if you see anything like "phpMyAdmin - Error" and the rest of the page is blank, like:
-![Extension is missing](http://i.imgur.com/pwHahph.png)
+[Navigate to phpMyAdmin](http://127.0.0.1/phpmyadmin/) page, wait for it to load, if you see anything like "phpMyAdmin - Error" and the rest of the page is blank, like:<br>
+![Extension is missing](http://i.imgur.com/pwHahph.png)<br>
 Before fixing error(s), stop `Apache` and `MySQL` modules.
 This is because, either you have downloaded non-threadsafe PHP (read the first step at `Updating PHP & phpMyAdmin`, it explicitly says **Thread Safe**), or you have skipped steps (10+).
 If you don't see any errors, congratulations, proceed next.
@@ -87,6 +88,7 @@ Default credentials to access phpMyAdmin (for XAMPP) are, username: `root`, leav
 })();
 ```
 Once you login, you may notice `You are connected as 'root' with no password...` error which appears at the very bottom of the page; you can ignore this message (hide it using AdBlock or by writting JS that will inject into page with Tampermonkey), in fact you should (otherwise if you wish to have a password, you will need to update constant variable `DATABASE_PASSWD` [here](https://github.com/OmegaExtern/gmod-login-system/blob/master/Constants.php#L11)).
+
 ### Importing a database
 1. Click on `phpMyAdmin` logo on the upper-left, click on `SQL` tab.
 2. Go [here](https://raw.githubusercontent.com/OmegaExtern/gmod-login-system/master/system.sql), select all (Ctrl+A), and copy it to the clipboard (Ctrl+C).
@@ -102,23 +104,26 @@ Once you login, you may notice `You are connected as 'root' with no password...`
 5. In the new window, under `General` on the right-hand side, click on the `...` button to choose PHP executable (by default it is located at `C:\xampp\php\php.exe`).
 6. Click on `OK` to check PHP installation, after that it should recognize version of PHP and debugger (Xdebug). Click on `Apply` and then click on the `OK` button. Finally, click on `OK` button to save settings.
 7. In upper-left corner of the `Quick Start` window, click on '<=' (back) arrow and then click on `Open...` button to open gmod-login-system project. In the new window, select the master repository directory which you have extracted/cloned onto your computer (it should display PhpStorm icon for that folder) and then click on the `OK` button to open the project.
+
 ### Database / Data Sources & Drivers
-1. Once the project has been loaded, you need to open Database window. There are several ways to do that, press the key Alt (for Windows/*nix) or Command (for Mac) twice and keep it down. While the key is pressed, the tool window buttons are visible. Click on `Database` (on the right side). You can stop pressing the key you were holding. You could have done this by using menu-bar, go to `View`, hover over `Tool Windows`, and then click on `Database` button.
-2. In upper-left corner of the `Database` window, click on `+` sign button, hover over `Data Sources`, and then click on `MySQL` button.
-3. In the new window that shows up, on the left pane, expand `Drivers` tree and select `MySQL` sub-tree. And then on the right-hand side, select `Settings` tab, expand `Driver files`, you should see text which says `Click to download files`, click on the `download` link. IDE will download MySQL Connector/J files for you. Wait for it to complete. Once it is complete, you should see some files being added at `Driver files`.
-4. On the left pane expand `Data Sources` tree, click on the (first sub-tree) `MySQL - @localhost`. On the right-hand side, go to `Database` tab.
+- Once the project has been loaded, you need to open Database window. There are several ways to do that, press the key Alt (for Windows/*nix) or Command (for Mac) twice and keep it down. While the key is pressed, the tool window buttons are visible. Click on `Database` (on the right side). You can stop pressing the key you were holding. You could have done this by using menu-bar, go to `View`, hover over `Tool Windows`, and then click on `Database` button.
+- In upper-left corner of the `Database` window, click on `+` sign button, hover over `Data Sources`, and then click on `MySQL` button.
+- In the new window that shows up, on the left pane, expand `Drivers` tree and select `MySQL` sub-tree. And then on the right-hand side, select `Settings` tab, expand `Driver files`, you should see text which says `Click to download files`, click on the `download` link. IDE will download MySQL Connector/J files for you. Wait for it to complete. Once it is complete, you should see some files being added at `Driver files`.
+- On the left pane expand `Data Sources` tree, click on the (first sub-tree) `MySQL - @localhost`. On the right-hand side, go to `Database` tab.
 Ensure the following settings are assigned as shown in the following table:
-| Name          | Value                  |
-| ------------- | ---------------------- |
-| Host          | localhost              |
-| Port          | 3306                   |
-| Database      | gmod_login_system      |
-| User          | root                   |
-| Password      |                        |
+
+| Name | Value |
+| ---- | ----- |
+| Host | localhost |
+| Port | 3306 |
+| Database | gmod_login_system |
+| User | root |
+| Password | |
+
 Password is not set (by default), leave it blank/empty.
-5. Click on `Test Connection` button to check if PhpStorm can connect to MySQL database. Wait for the response. It should tell you extra details (driver name, version...) and `Connection successful`. Click on the `OK` button.
-6. If you expand `Driver files`, it should say `Using MySQL driver files`. If not, go back to third step.
-7. Click on the `Apply` and then click on the `OK` button to save Data Sources & Drivers settings.
+- Click on `Test Connection` button to check if PhpStorm can connect to MySQL database. Wait for the response. It should tell you extra details (driver name, version...) and `Connection successful`. Click on the `OK` button.
+- If you expand `Driver files`, it should say `Using MySQL driver files`. If not, go back to third step.
+- Click on the `Apply` and then click on the `OK` button to save Data Sources & Drivers settings.
 
 ## Installation for Garry's Mod
 1. Copy `cfg` and `lua` folders from the master repository directory and paste over `Steam install path\SteamApps\common\GarrysMod\garrysmod` (do overwrite files when asked).
@@ -126,38 +131,41 @@ Password is not set (by default), leave it blank/empty.
 3. Run Garry's Mod, create a new (LAN) game/server with your favorite map.
 4. Once you are in-game, you should see notification in the upper-right corner. Press key **INS** or **Insert** to bring up login system VGUI.
 5. If you check out Developer Console, you will see callback information after the player sends a recognizable chat-command/messsage.
+
 ### Available chat commands
 Chat commands are case-insensitive (e.g. !LogIN and !login will trigger the same event). But, arguments **are case-sensitive**.
-| Command     | Arguments                                                                                                          | Description                                                            | Rank requirement | Cost             |
-| -----------:|:------------------------------------------------------------------------------------------------------------------ |:---------------------------------------------------------------------- |:----------------:|:----------------:|
-|    `!login` |                                                                                                                    | Attempts to log in to the system.                                      | Not implemented. | Not implemented. |
-|   `!logout` |                                                                                                                    | Attempts to log out from the system.                                   | Not implemented. | Not implemented. |
+
+| Command | Arguments | Description | Rank requirement | Cost |
+| -------:|:--------- |:----------- |:----------------:|:----:|
+| `!login` | | Attempts to log in to the system. | Not implemented. | Not implemented. |
+| `!logout` | | Attempts to log out from the system. | Not implemented. | Not implemented. |
 | `!register` | `name`: Choose your name, at least 4 chars long (max. 24), must start with a letter, only A-Z/a-z and 0-9 allowed. | Attempts to register a new player with specified name into the system. | Not implemented. | Not implemented. |
+
 **More - Coming soon**!!!
 
 ## Debugging the system (part 2)
 I prefer to use Google Chrome web-browser for the first time, later, for debugging just use web-browser of your choice (preferably, Gecko based).
-1. Go back to PhpStorm window.
-2. In upper-right corner of the IDE, click on the icon which says `Start Listening for PHP Debugger Connections`/`Listen for debugger connections`.
-3. After you start listening for PHP debugger connections, you should notice that icon has been changed (green on top, before it was red as it wasn't listening..), you need to open `post.php` file. To do that, there are several ways, in upper-left corner (below menu-bar) where it says `gmod-login-system`, click on it. List of project files pops up, click on `post.php` file button. You could also use `Project` window (using menu-bar, go to View, hover over `Tool Windows`, click on `Project` button, and then open `post.php` file).
-2. Once you have `post.php` file opened, you need to open it in the web-browser. To do that, there are several ways, move your cursor over upper-right corner of the code editor, you should see web-browser icons, click on Google Chrome icon. You could also right click `post.php` file in the Project window, hover over `Open in Browser` and then click on `Chrome` button. Just for the reference, URL should be [http://localhost:63342/gmod-login-system/post.php](http://localhost:63342/gmod-login-system/post.php).
-3. Once you have opened `post.php` file in Google Chrome web-browser. You need to execute the following JavaScript (press F12 key, and then go to Console, copy/paste the following code and then press Enter/Return key):
+- Go back to PhpStorm window.
+- In upper-right corner of the IDE, click on the icon which says `Start Listening for PHP Debugger Connections`/`Listen for debugger connections`.
+- After you start listening for PHP debugger connections, you should notice that icon has been changed (green on top, before it was red as it wasn't listening..), you need to open `post.php` file. To do that, there are several ways, in upper-left corner (below menu-bar) where it says `gmod-login-system`, click on it. List of project files pops up, click on `post.php` file button. You could also use `Project` window (using menu-bar, go to View, hover over `Tool Windows`, click on `Project` button, and then open `post.php` file).
+- Once you have `post.php` file opened, you need to open it in the web-browser. To do that, there are several ways, move your cursor over upper-right corner of the code editor, you should see web-browser icons, click on Google Chrome icon. You could also right click `post.php` file in the Project window, hover over `Open in Browser` and then click on `Chrome` button. Just for the reference, URL should be [http://localhost:63342/gmod-login-system/post.php](http://localhost:63342/gmod-login-system/post.php).
+- Once you have opened `post.php` file in Google Chrome web-browser. You need to execute the following JavaScript (press F12 key, and then go to Console, copy/paste the following code and then press Enter/Return key):
 ```javascript
 (function() {
   document.cookie='XDEBUG_SESSION=PHPSTORM;path=/;';
 })();
 ```
-4. Go insert breakpoints around, in main.php file. Then submit form in web-browser, PhpStorm should notify you upon the request, accept it.
-5. To stop debugging session, in upper-right corner of the IDE, click on the button which says `Stop Listening for PHP Debugger Connections`. In web-browser, execute the following JS:
+- Go insert breakpoints around, in main.php file. Then submit form in web-browser, PhpStorm should notify you upon the request, accept it.
+- To stop debugging session, in upper-right corner of the IDE, click on the button which says `Stop Listening for PHP Debugger Connections`. In web-browser, execute the following JS:
 ```javascript
 (function() {
   document.cookie='XDEBUG_SESSION=;expires=Mon, 05 Jul 2000 00:00:00 GMT;path=/;';
 })();
 ```
-6. You should consider bookmarking JS or [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension for Google Chrome. Now you can debug the system and do all sorts of things. Happy coding.
+- You should consider bookmarking JS or [Xdebug helper](https://chrome.google.com/webstore/detail/xdebug-helper/eadndfjplgieldjbigjakmdgkmoaaaoc) extension for Google Chrome. Now you can debug the system and do all sorts of things. Happy coding.
 
 ## YouTube video covering the entire setup
-[YouTube channel](https://www.youtube.com/user/OmegaExtern)
+[YouTube channel](https://www.youtube.com/user/OmegaExtern)<br>
 **TODO**.
 
 # CONTRIBUTION
