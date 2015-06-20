@@ -15,7 +15,19 @@ loginsys =
     chat_prefix = '!',
     convar_prefix = "loginsys_",
     hook_prefix = "login_system_",
-    f =
+    vgui =
+    {
+        height = 480.0,
+        width = 640.0
+    }
+}
+loginsys.f = setmetatable(loginsys.f or {},
+{
+    __metatable = false,
+    __newindex = function(self, key, value)
+        error("can not change a protected table")
+    end,
+    __index =
     {
         login = function(...)
             local funcname = debug.getinfo(1, 'n').name -- login
@@ -42,13 +54,8 @@ loginsys =
             print(Format("login_system[%s](%s, %s):", funcname, args[1], args[2]))
             login_system[funcname](args[1], args[2])
         end
-    },
-    vgui =
-    {
-        height = 480.0,
-        width = 640.0
     }
-}
+})
 require("cvarsx") -- require includes/modules/cvarsx module.
 cvarsx.SetConVarPrefix(loginsys.convar_prefix)
 loginsys.convars = {}
@@ -108,7 +115,7 @@ end, function()
         loginsys.tempe = string.Explode(' ', loginsys.temp) -- Explode by space.
         if loginsys.tempe[1] == loginsys.chat_prefix then
             -- In case if the first exploded element matches the chat prefix.
-            if #loginsys.tempe < 2 or loginsys.tempe[2]:len() < 5 then
+            if #loginsys.tempe < 2 or loginsys.tempe[2]:len() < 5 then -- 5 is the length of the command with lowest number of chars.
                 return
             end
             -- Uppercase and concate second element with the chat prefix (first element).
