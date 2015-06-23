@@ -129,7 +129,7 @@ Password is not set (by default), leave it blank/empty.
 1. Copy `cfg` and `lua` folders from the master repository directory and paste over `Steam install path\SteamApps\common\GarrysMod\garrysmod` (do overwrite files when asked).
 2. Repeat the first step every time when you make changes in master repository directory and reconnect to the game/server or recreate it.
 3. Run Garry's Mod, create a new (LAN) game/server with your favorite map.
-4. Once you are in-game, you should see notification in the upper-right corner. Press key **INS** or **Insert** to bring up login system VGUI.
+4. Once you are in-game, open Developer Console and submit `lua_openscript_cl main.lua` command. You should see notification in the upper-right corner. Press key **INS** or **Insert** to bring up login system VGUI.
 5. If you check out Developer Console, you will see callback information after the player sends a recognizable chat-command/message.
 
 ### Available chat commands
@@ -173,7 +173,7 @@ This project is still under development. And it is getting better with every upd
 Everybody should feel free to fork and contribute to this project.
 Please report all bugs, post your ideas/suggestions/problems using the [issue tracking page](https://github.com/OmegaExtern/gmod-login-system/issues/new).
 Everything else/contact me:
-- [@FacePunch](http://facepunch.com/member.php?u=618174).
+- [@Facepunch](http://facepunch.com/member.php?u=618174).
 - [@Steam](https://steamcommunity.com/id/76561198123458027).
 - [@Twitter](https://twitter.com/OmegaExtern).
 - [@Website](http://omegaextern.tk).
