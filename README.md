@@ -174,7 +174,7 @@ Everybody should feel free to fork and contribute to this project.
 Please report all bugs, post your ideas/suggestions/problems using the [issue tracking page](https://github.com/OmegaExtern/gmod-login-system/issues/new).
 Everything else/contact me:
 - [@Facepunch](http://facepunch.com/member.php?u=618174).
-- [@Steam](https://steamcommunity.com/id/76561198123458027).
+- [@Steam](https://steamcommunity.com/profiles/76561198123458027).
 - [@Twitter](https://twitter.com/OmegaExtern).
 - [@Website](http://omegaextern.tk).
 
